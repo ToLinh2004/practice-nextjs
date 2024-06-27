@@ -11,9 +11,8 @@ function ShowTable() {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     }
-
   );
-  
+
   return (
     <>
       <DTable products={data} />

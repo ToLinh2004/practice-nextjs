@@ -57,16 +57,15 @@ function DTable(props: IProps) {
         hover
         variant="light"
         style={{ textAlign: "center" }}
-       
       >
         <thead>
           <tr>
-            <th >ID</th>
+            <th>ID</th>
             <th>Name</th>
             <th>Image</th>
             <th>Price</th>
             <th>Quantity</th>
-            <th >Action</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -80,7 +79,7 @@ function DTable(props: IProps) {
               </td>
               <td>{item.price}</td>
               <td>{item.quantity}</td>
-              <td >
+              <td>
                 <Button variant="primary">
                   {" "}
                   <Link href={`/products/${item.id}`} type="btn">
@@ -105,7 +104,7 @@ function DTable(props: IProps) {
           ))}
         </tbody>
       </Table>
-      
+
       <CreateModal
         showModalCreate={showModalCreate}
         setShowModalCreate={setShowModalCreate}
