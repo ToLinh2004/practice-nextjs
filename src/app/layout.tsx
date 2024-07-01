@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Header from "@/app/_components/Header";
+import Header from "@/components/Header";
 import { Container } from "react-bootstrap";
 import { ThemeProvider } from "next-themes";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import SideBar from "@/components/SideBar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -31,14 +34,18 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Container>
-            <Header />
-            <br />
-            <br />
-            {children}
+          <Container fluid>
+            <Row>
+              <Col>
+                <SideBar />
+              </Col>
+              <Col xs={10}>
+                <Header /> {children}
+              </Col>
+            </Row>
           </Container>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

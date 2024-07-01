@@ -20,38 +20,54 @@ const options = {
 };
 
 function Header() {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const toggleShow = () => setShow((s) => !s);
   const { resolvedTheme, theme, setTheme } = useTheme();
   const pathname = usePathname();
   return (
     <>
-      <Navbar.Offcanvas
-        id={`offcanvasNavbar-expand-`}
-        aria-labelledby={`offcanvasNavbarLabel-expand-`}
-        placement="end"
-      ></Navbar.Offcanvas>
-      <Offcanvas
-        show={show}
-        onHide={handleClose}
-        scroll={options.scroll}
-        backdrop={options.backdrop}
-        style={{ width: "180px" }}
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Management</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Nav.Link href="#deets">User Management</Nav.Link>
-          <br />
-          <Nav.Link href="/products/show">Product Management</Nav.Link>
-        </Offcanvas.Body>
-      </Offcanvas>
-      <Navbar collapseOnSelect bg="primary" data-bs-theme="dark" sticky="top" style={{width:'100%'}}>
+      <div className="flex flex-row bg-blue-600 h-14 sticky top-0">
+        <div className="basis-3/12">
+        <p className="text-white uppercase text-2xl mt-2"><Link href='/'>CRUD</Link></p>
+        </div>
+        <div className="basis-6/12">
+          <input
+            type="search"
+            placeholder="search ...."
+            className="h-10 w-50 mt-2 rounded-lg"
+          />
+        </div>
+
+        <div className="basis-1/12">
+          <div className="flex flex-row-reverse ">
+          <button
+                onClick={() => {
+                  setTheme(resolvedTheme === "light" ? "dark" : "light");
+                }}
+                type="submit"
+              >
+                {" "}
+                {theme === "light" ? (
+                  <Image
+                    src="/sunny.png"
+                    width={20}
+                    height={20}
+                    alt="Picture of the author"
+                  />
+                ) : (
+                  <Image
+                    src="/moon.png"
+                    width={20}
+                    height={20}
+                    alt="Picture of the author"
+                  />
+                )}
+              </button>
+
+            <p className="text-white uppercase text-2xl mt-2"><Link href='/'>Login</Link></p>
+          </div>
+        </div>
+      </div>
+      {/* <Navbar collapseOnSelect bg="primary" data-bs-theme="dark" sticky="top">
         <Container>
-          <Navbar.Brand onClick={toggleShow}>Click</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
@@ -59,15 +75,16 @@ function Header() {
                 const isActive = pathname.startsWith(link.href);
                 return (
                   <>
-                   <Navbar.Brand ><Link
-                    href={link.href}
-                    key={link.name}
-                    style={{ color: isActive ? "white" : "gray" }}
-                  >
-                    {link.name}
-                  </Link></Navbar.Brand>
+                    <Navbar.Brand>
+                      <Link
+                        href={link.href}
+                        key={link.name}
+                        style={{ color: isActive ? "white" : "gray" }}
+                      >
+                        {link.name}
+                      </Link>
+                    </Navbar.Brand>
                   </>
-                  
                 );
               })}
             </Nav>
@@ -99,7 +116,7 @@ function Header() {
             </Nav>
           </Navbar.Collapse>
         </Container>
-      </Navbar>
+      </Navbar> */}
     </>
   );
 }

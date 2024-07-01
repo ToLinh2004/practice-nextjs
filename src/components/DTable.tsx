@@ -4,11 +4,11 @@ import Image from "react-bootstrap/Image";
 import { useState } from "react";
 import { Product, IProps } from "@/app/interfaces/data";
 import Button from "react-bootstrap/Button";
-import CreateModal from "@/app/_components/CreateModal";
-import DetailModal from "@/app/_components/DetailModal";
+import CreateModal from "@/components/CreateModal";
+import DetailModal from "@/components/DetailModal";
 import Link from "next/link";
 import { mutate } from "swr";
-import UpdateModal from "@/app/_components/UpdateModal";
+import UpdateModal from "@/components/UpdateModal";
 function DTable(props: IProps) {
   const { products } = props;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
@@ -46,6 +46,8 @@ function DTable(props: IProps) {
 
   return (
     <>
+    <br />
+    <br />
       <Button variant="primary" onClick={() => setShowModalCreate(true)}>
         Add new product
       </Button>
@@ -72,15 +74,15 @@ function DTable(props: IProps) {
           {/* use ?  "code=undefine" => not error */}
           {products?.map((item) => (
             <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>
+              <td style={{paddingTop:'35px'}}>{item.id}</td>
+              <td style={{paddingTop:'35px'}}>{item.name}</td>
+              <td >
                 <Image src={item.img} rounded alt="" height={150} width={100} />
               </td>
-              <td>{item.price}</td>
-              <td>{item.quantity}</td>
-              <td>
-                <Button variant="primary">
+              <td style={{paddingTop:'35px'}}>{item.price}</td>
+              <td style={{paddingTop:'35px'}}>{item.quantity}</td>
+              <td >
+                <Button variant="primary"  className="mx-3 mt-4">
                   {" "}
                   <Link href={`/products/${item.id}`} type="btn">
                     Detail
@@ -88,13 +90,16 @@ function DTable(props: IProps) {
                 </Button>
                 <Button
                   variant="warning"
-                  className="mx-3"
+                  className="mx-3 mt-4"
+    
                   onClick={() => handleDelete(item.id)}
+
                 >
                   Delete
                 </Button>
                 <Button
                   variant="danger"
+                  className="mx-3 mt-4"
                   onClick={() => (setShowModalUpdate(true), setProduct(item))}
                 >
                   Update
