@@ -1,18 +1,14 @@
 "use client";
-import Table from "react-bootstrap/Table";
 import Image from "react-bootstrap/Image";
 import { useState } from "react";
 import { Product, IProps } from "@/app/interfaces/data";
-import Button from "react-bootstrap/Button";
 import CreateModal from "@/components/CreateModal";
-import DetailModal from "@/components/DetailModal";
 import Link from "next/link";
 import { mutate } from "swr";
 import UpdateModal from "@/components/UpdateModal";
 function DTable(props: IProps) {
   const { products } = props;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
   const [product, setProduct] = useState<Product>({
     id: 0,
@@ -111,10 +107,6 @@ function DTable(props: IProps) {
       <CreateModal
         showModalCreate={showModalCreate}
         setShowModalCreate={setShowModalCreate}
-      />
-      <DetailModal
-        showModalDelete={showModalDelete}
-        setShowModalDelete={setShowModalDelete}
       />
       <UpdateModal
         showModalUpdate={showModalUpdate}

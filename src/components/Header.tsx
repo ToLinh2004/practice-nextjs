@@ -1,29 +1,13 @@
 "use client";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import { useState } from "react";
-import Offcanvas from "react-bootstrap/Offcanvas";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import CreateModalRegister from "@/components/CreateModalRegister";
 import CreateModalLogin from "@/components/CreateModalLogin";
-const navLinks = [
-  { name: "CRUD", href: "/" },
-  { name: "User", href: "/" },
-  { name: "Product", href: "/products/show" },
-];
-const options = {
-  name: "Disable backdrop",
-  scroll: false,
-  backdrop: false,
-};
 
 function Header() {
   const { resolvedTheme, theme, setTheme } = useTheme();
-  const pathname = usePathname();
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
   const [showCreateModalLogin, setShowCreateModalLogin] =
     useState<boolean>(false);
@@ -95,57 +79,7 @@ function Header() {
         showCreateModalLogin={showCreateModalLogin}
         setShowCreateModalLogin={setShowCreateModalLogin}
       />
-      {/* <Navbar collapseOnSelect bg="primary" data-bs-theme="dark" sticky="top">
-        <Container>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              {navLinks.map((link) => {
-                const isActive = pathname.startsWith(link.href);
-                return (
-                  <>
-                    <Navbar.Brand>
-                      <Link
-                        href={link.href}
-                        key={link.name}
-                        style={{ color: isActive ? "white" : "gray" }}
-                      >
-                        {link.name}
-                      </Link>
-                    </Navbar.Brand>
-                  </>
-                );
-              })}
-            </Nav>
-            <Nav>
-              <Nav.Link href="#deets">Login</Nav.Link>
-              <button
-                onClick={() => {
-                  setTheme(resolvedTheme === "light" ? "dark" : "light");
-                }}
-                type="submit"
-              >
-                {" "}
-                {theme === "light" ? (
-                  <Image
-                    src="/sunny.png"
-                    width={20}
-                    height={20}
-                    alt="Picture of the author"
-                  />
-                ) : (
-                  <Image
-                    src="/moon.png"
-                    width={20}
-                    height={20}
-                    alt="Picture of the author"
-                  />
-                )}
-              </button>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar> */}
+      
     </>
   );
 }
