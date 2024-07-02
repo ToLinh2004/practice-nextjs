@@ -10,7 +10,7 @@ export default function ProductLayout({
 }>) {
   return (
     <>
-    {children}
+    <div className="row-span-2 col-span-2">{children}</div>
     </>
   );
 }

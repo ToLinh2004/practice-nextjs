@@ -46,69 +46,67 @@ function DTable(props: IProps) {
 
   return (
     <>
-    <br />
-    <br />
-      <Button variant="primary" onClick={() => setShowModalCreate(true)}>
-        Add new product
-      </Button>
       <br />
       <br />
-      <Table
-        striped
-        bordered
-        hover
-        variant="light"
-        style={{ textAlign: "center" }}
+      <button
+        className="bg-blue-600 text-white h-10 w-40  rounded"
+        onClick={() => setShowModalCreate(true)}
       >
+        Add new product
+      </button>
+
+      <br />
+      <br />
+
+      <table className="table-auto border-2 w-100">
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Image</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Action</th>
+          <tr className="text-center">
+            <th className="border">ID</th>
+            <th className="border">Name</th>
+            <th className="border">Image</th>
+            <th className="border">Price</th>
+            <th className="border">Quantity</th>
+            <th className="border">Action</th>
           </tr>
         </thead>
         <tbody>
           {/* use ?  "code=undefine" => not error */}
           {products?.map((item) => (
-            <tr key={item.id}>
-              <td style={{paddingTop:'35px'}}>{item.id}</td>
-              <td style={{paddingTop:'35px'}}>{item.name}</td>
-              <td >
+            <tr key={item.id} className="text-center">
+              <td className="border">{item.id}</td>
+              <td className="border">{item.name}</td>
+              <td className="border">
                 <Image src={item.img} rounded alt="" height={150} width={100} />
               </td>
-              <td style={{paddingTop:'35px'}}>{item.price}</td>
-              <td style={{paddingTop:'35px'}}>{item.quantity}</td>
-              <td >
-                <Button variant="primary"  className="mx-3 mt-4">
-                  {" "}
-                  <Link href={`/products/${item.id}`} type="btn">
+              <td className="border">{item.price}</td>
+              <td className="border">{item.quantity}</td>
+              <td className="border">
+                <button className="bg-blue-600 text-white h-10 w-20 ml-3 mb-4 rounded">
+                  <Link
+                    href={`/admin/products/${item.id}`}
+                    type="btn"
+                    className="text-white no-underline"
+                  >
                     Detail
                   </Link>
-                </Button>
-                <Button
-                  variant="warning"
-                  className="mx-3 mt-4"
-    
+                </button>
+                <button
+                  className="bg-yellow-400 rounded mx-3 mt-4 w-20 h-10"
                   onClick={() => handleDelete(item.id)}
-
                 >
                   Delete
-                </Button>
-                <Button
-                  variant="danger"
-                  className="mx-3 mt-4"
+                </button>
+                <button
+                  className="bg-red-500 text-white rounded mr-3 w-20 h-10"
                   onClick={() => (setShowModalUpdate(true), setProduct(item))}
                 >
                   Update
-                </Button>
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
 
       <CreateModal
         showModalCreate={showModalCreate}

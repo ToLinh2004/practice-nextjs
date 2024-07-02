@@ -1,9 +1,9 @@
-import ShowTable from "@/app/products/show/page";
+import User from "@/app/user/page";
 
 export default function Home() {
   return (
     <>
-      <ShowTable />
+      {/* <User /> */}
     </>
   );
 }
