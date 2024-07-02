@@ -2,10 +2,10 @@
 import Image from "react-bootstrap/Image";
 import { useState } from "react";
 import { Product, IProps } from "@/app/interfaces/data";
-import CreateModal from "@/components/CreateModal";
+import CreateModal from "@/app/components/CreateModal";
 import Link from "next/link";
 import { mutate } from "swr";
-import UpdateModal from "@/components/UpdateModal";
+import UpdateModal from "@/app/components/UpdateModal";
 function DTable(props: IProps) {
   const { products } = props;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);

@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container } from "react-bootstrap";
 import { ThemeProvider } from "next-themes";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import SideBar from "@/components/SideBar";
-import Header from "@/components/Header";
+import SideBar from "@/app/components/SideBar";
+import Header from "@/app/components/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,30 +25,24 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className}`}>
-        {/* <ThemeProvider
+        <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Container fluid>
-            <Row>
-              <Col xs={10}>{children}</Col>
-            </Row>
-          </Container>
-        </ThemeProvider> */}
-       <div className="grid grid-cols-3 ">
-  <div className="col-span-1">
-    <SideBar />
-  </div>
-  <div className="col-span-2 mr-20 -ml-20">
-    <Header />
-    {children}
-  </div>
-</div>
+          <div className="grid grid-cols-3 ">
+            <div className="col-span-1">
+              <SideBar />
+            </div>
+            <div className="col-span-2 mr-20 -ml-20">
+              <Header />
+              {children}
+            </div>
+          </div>
+        </ThemeProvider>
 
-        <>
-        </>
+        <></>
       </body>
     </html>
   );

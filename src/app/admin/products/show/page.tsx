@@ -1,6 +1,6 @@
 "use client";
-import DTable from "@/components/DTable";
-import MyPaginationComponent from "@/components/Pagination";
+import DTable from "@/app/components/DTable";
+import MyPaginationComponent from "@/app/components/Pagination";
 import useSWR from "swr";
 import { Suspense, useState } from "react";
 

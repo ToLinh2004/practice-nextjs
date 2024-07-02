@@ -1,5 +1,4 @@
 import React from "react";
-import { Pagination } from "react-bootstrap";
 
 interface PaginationComponentProps {
   totalPages: number;

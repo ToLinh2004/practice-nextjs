@@ -3,54 +3,52 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 
 interface IProps {
   showModalCreate: boolean;
   setShowModalCreate: (value: boolean) => void;
 }
-function CreateModalRegister(props: IProps) {
+function CreateModal(props: IProps) {
   const { showModalCreate, setShowModalCreate } = props;
-  const router = useRouter();
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [role,setRole]=useState<string>("user");
-  const [avatar, setAvatar] = useState<string>("");
-  const handelCreateRegisterSubmit = async (e: any) => {
+  const [name, setName] = useState<string>("");
+  const [img, setImageFile] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
+  const handelCreateSubmit = async (e: any) => {
     e.preventDefault();
-    if(!fullName){
-      alert('You need type full name');
+    if(!name){
+      alert('You need type name');
       return
     }
-    if(!email){
-        alert('You need type email');
-        return
-      }
-    if(!avatar){
+    if(!img){
       alert('You need type image');
       return
     }
-    if(!password){
-      alert('You need type password');
+    if(!price){
+      alert('You need type price');
+      return
+    }
+    if(!quantity){
+      alert('You need type quantity');
       return
     }
     try {
       const res = await fetch(
-        `https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/`,
+        `https://6520d291906e276284c4b0d2.mockapi.io/api/1/products/`,
         {
           method: "POST",
           headers: {
             'accept': 'application/json',
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email,password,fullName, avatar,role }),
+          body: JSON.stringify({ name, img, price, quantity }),
         }
       );
       const data = await res.json();
       if (data) {
-        alert('Register successfully');
         setShowModalCreate(false);
+        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products')
       }
     } catch (error) {
       console.log("Error: ",error);
@@ -66,40 +64,40 @@ function CreateModalRegister(props: IProps) {
         size="lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title style={{fontWeight:'bold'}}>Register</Modal.Title>
+          <Modal.Title style={{fontWeight:'bold'}}>Create Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{fontWeight:'bold'}}>Full Name</Form.Label>
+              <Form.Label style={{fontWeight:'bold'}}>Product Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter Full Name"
-                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter product name"
+                onChange={(e) => setName(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{fontWeight:'bold'}}>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter Email"
-                onChange={(e: any) => setEmail(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{fontWeight:'bold'}}>PassWord</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter Password"
-                onChange={(e: any) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{fontWeight:'bold'}}>Avatar</Form.Label>
+              <Form.Label style={{fontWeight:'bold'}}>Image</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter URL of Image"
-                onChange={(e) => setAvatar(e.target.value)}
+                placeholder="Enter URL of image"
+                onChange={(e) => setImageFile(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{fontWeight:'bold'}}>Price</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter price"
+                onChange={(e: any) => setPrice(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{fontWeight:'bold'}}>Quantity</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter Quantity"
+                onChange={(e: any) => setQuantity(e.target.value)}
               />
             </Form.Group>
           </Form>
@@ -108,8 +106,8 @@ function CreateModalRegister(props: IProps) {
           <Button variant="secondary" onClick={() => setShowModalCreate(false)}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handelCreateRegisterSubmit}>
-            Register
+          <Button variant="primary" onClick={handelCreateSubmit}>
+            Create
           </Button>
         </Modal.Footer>
       </Modal>
@@ -117,4 +115,4 @@ function CreateModalRegister(props: IProps) {
   );
 }
 
-export default CreateModalRegister;
+export default CreateModal;

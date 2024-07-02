@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import CreateModalRegister from "@/components/CreateModalRegister";
-import CreateModalLogin from "@/components/CreateModalLogin";
+import CreateModalRegister from "@/app/components/CreateModalRegister";
+import CreateModalLogin from "@/app/components/CreateModalLogin";
 
 function Header() {
   const { resolvedTheme, theme, setTheme } = useTheme();
