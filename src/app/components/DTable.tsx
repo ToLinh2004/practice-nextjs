@@ -42,19 +42,22 @@ function DTable(props: IProps) {
 
   return (
     <>
-      <br />
-      <br />
+
       <button
-        className="bg-blue-600 text-white h-10 w-40  rounded"
+        className="bg-blue-600 text-white h-10 w-40 mt-4 rounded float-left"
+      
+      >
+        Product
+      </button>
+      <button
+        className="bg-blue-600 text-white h-10 w-40 mt-4 mb-4  rounded float-right"
         onClick={() => setShowModalCreate(true)}
       >
         Add new product
       </button>
+      
 
-      <br />
-      <br />
-
-      <table className="table-auto border-2 w-100">
+      <table className="table-auto border-2 w-full">
         <thead>
           <tr className="text-center">
             <th className="border">ID</th>
@@ -68,15 +71,16 @@ function DTable(props: IProps) {
         <tbody>
           {/* use ?  "code=undefine" => not error */}
           {products?.map((item) => (
-            <tr key={item.id} className="text-center">
+            <tr key={item.id} className=" border text-center">
               <td className="border">{item.id}</td>
               <td className="border">{item.name}</td>
-              <td className="border">
-                <Image src={item.img} rounded alt="" height={150} width={100} />
+              <td className="grid place-items-center mt-2">
+                
+                <Image src={item.img} rounded alt="" height={200} width={100} />
               </td>
               <td className="border">{item.price}</td>
               <td className="border">{item.quantity}</td>
-              <td className="border">
+              <td className="border md:flex-wrap">
                 <button className="bg-blue-600 text-white h-10 w-20 ml-3 mb-4 rounded">
                   <Link
                     href={`/admin/products/${item.id}`}
@@ -87,13 +91,13 @@ function DTable(props: IProps) {
                   </Link>
                 </button>
                 <button
-                  className="bg-yellow-400 rounded mx-3 mt-4 w-20 h-10"
+                  className="bg-red-500 rounded mx-3 mt-4 w-20 h-10 text-white"
                   onClick={() => handleDelete(item.id)}
                 >
                   Delete
                 </button>
                 <button
-                  className="bg-red-500 text-white rounded mr-3 w-20 h-10"
+                  className="bg-yellow-400 text-white rounded mr-3 w-20 h-10"
                   onClick={() => (setShowModalUpdate(true), setProduct(item))}
                 >
                   Update

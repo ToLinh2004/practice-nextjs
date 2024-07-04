@@ -4,7 +4,7 @@ import Link from "next/link";
 function SideBar() {
   return (
     <>
-      <div className="bg-zinc-100 h-full max-h-200 fixed top-0 left-0 w-60">
+      <div className="bg-zinc-100 h-full max-h-200 fixed top-0 left-30 w-60">
         <div className="bg-blue-600 h-12">
           <p className="text-2xl text-white pt-2 ml-2">Tờ Ling</p>
         </div>

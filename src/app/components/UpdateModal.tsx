@@ -18,6 +18,13 @@ function UpdateModal(props: IProps) {
   const [img, setImageFile] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
+  const [errorProductName, setErrorName] = useState("");
+  const [errorImage, setErrorImage] = useState("");
+  const [errorPrice, setErrorPrice] = useState("");
+  const [errorQuantity, setErrorQuantity] = useState("");
+
+
+
   useEffect(()=>{
     if(product && product.id){
       setId(product.id),
@@ -32,19 +39,19 @@ function UpdateModal(props: IProps) {
   const handleUpdateSubmit = async (e: any) => {
     e.preventDefault();
     if(!name){
-      alert('You need type name');
+      setErrorName("Product name is required");
       return
     }
     if(!img){
-      alert('You need type image');
+      setErrorImage("Image is required");
       return
     }
     if(!price){
-      alert('You need type price');
+      setErrorPrice("Price is required");
       return
     }
     if(!quantity){
-      alert('You need type quantity');
+      setErrorQuantity('Quantity is required')
       return
     }
     const dataUpload = {
@@ -82,7 +89,7 @@ function UpdateModal(props: IProps) {
         onHide={() => setShowModalUpdate(false)}
         backdrop="static"
         keyboard={false}
-        size="lg"
+        // size="lg"
       >
       <Modal.Header closeButton>
         <Modal.Title style={{fontWeight:'bold'}}>Update Product</Modal.Title>
@@ -106,6 +113,8 @@ function UpdateModal(props: IProps) {
               onChange={(e) => setName(e.target.value)}
             />
           </Form.Group>
+          {errorProductName && <p className="text-red-600">{errorProductName}</p>}
+
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label style={{fontWeight:'bold'}}>Image</Form.Label>
             <Form.Control
@@ -115,6 +124,8 @@ function UpdateModal(props: IProps) {
               onChange={(e) => setImageFile(e.target.value)}
             />
           </Form.Group>
+          {errorImage && <p className="text-red-600">{errorImage}</p>}
+
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label style={{fontWeight:'bold'}}>Price</Form.Label>
             <Form.Control
@@ -124,6 +135,8 @@ function UpdateModal(props: IProps) {
               onChange={(e: any) => setPrice(e.target.value)}
             />
           </Form.Group>
+          {errorPrice && <p className="text-red-600">{errorPrice}</p>}
+
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label style={{fontWeight:'bold'}}>Quantity</Form.Label>
             <Form.Control
@@ -133,6 +146,8 @@ function UpdateModal(props: IProps) {
               onChange={(e: any) => setQuantity(e.target.value)}
             />
           </Form.Group>
+          {errorQuantity && <p className="text-red-600">{errorQuantity}</p>}
+
         </Form>
       </Modal.Body>
       <Modal.Footer>

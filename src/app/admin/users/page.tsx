@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 type User = {
   id: number;
@@ -24,40 +23,43 @@ function ShowUser() {
       throw new Error("Fetching data fail");
     }
   };
-  const updateStatus = async (id:number, status:string) =>{
+  const updateStatus = async (id: number, status: string) => {
     try {
-        
-        const changedStatus= status === "Active" ? "Inactive" : "Active";
-        const res= await  fetch(`https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/${id}`,
+      const changedStatus = status === "Active" ? "Inactive" : "Active";
+      const res = await fetch(
+        `https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/${id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ status: changedStatus }),
-        });
-        if (res.ok) {
-            setUser((users) =>
-              users.map((user) =>
-                user.id === id ? { ...user, status: changedStatus } : user
-              )
-            );
-          }else {
-            throw new Error("Updating status failed");
-          }
-        } catch (error) {
-          console.error(error);
         }
-  }
+      );
+      if (res.ok) {
+        setUser((users) =>
+          users.map((user) =>
+            user.id === id ? { ...user, status: changedStatus } : user
+          )
+        );
+      } else {
+        throw new Error("Updating status failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     getAllUser();
   }, []);
 
   return (
     <>
-      <br />
-      <br />
-      <table className="table-auto border-2 w-100">
+      <button className="bg-blue-600 text-white h-10 w-40 mb-4 mt-4 rounded float-left">
+        User
+      </button>
+
+      <table className="table-auto border-2 w-full">
         <thead>
           <tr className="text-center">
             <th className="border">ID</th>
@@ -70,22 +72,17 @@ function ShowUser() {
         </thead>
         <tbody>
           {users?.map((item) => (
-            <tr key={item.id} className="text-center">
+            <tr key={item.id} className="border text-center">
               <td className="border">{item.id}</td>
               <td className="border">{item.fullName}</td>
-              <td className="border">
-                <Image
-                  src={item.avatar}
-                  alt=""
-                  height={100}
-                  width={100}
-                 
-                />
+              <td className="grid place-items-center ">
+
+                <Image src={item.avatar} alt="" height={100} width={100} />
               </td>
               <td className="border">{item.email}</td>
               <td className="border">{item.role}</td>
               <td className="border">
-              <button
+                <button
                   className={`h-10 w-20 ml-3 rounded ${
                     item.status === "Active"
                       ? "bg-green-600 text-white"

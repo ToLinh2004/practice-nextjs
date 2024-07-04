@@ -9,46 +9,48 @@ import CreateModalLogin from "@/app/components/CreateModalLogin";
 function Header() {
   const { resolvedTheme, theme, setTheme } = useTheme();
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
-  const [showCreateModalLogin, setShowCreateModalLogin] =useState<boolean>(false);
+  const [showCreateModalLogin, setShowCreateModalLogin] =
+    useState<boolean>(false);
 
   return (
     <>
-      <div className="flex flex-row bg-blue-600 h-12 rounded-sm sticky top-0">
+      <div className="flex flex-row bg-blue-600 h-12 rounded sticky top-0">
         <div className="basis-3/12">
-          <p className="text-white uppercase text-2sm mt-2">
-            <Link href="/admin" className="text-white no-underline ml-2">
+          <p className="text-white uppercase text-xl mt-2">
+            <Link href="/admin" className="text-white no-underline ml-12 mt-1">
               CRUD
             </Link>
           </p>
         </div>
         <div className="basis-6/12">
           <input
-            type="search"
-            placeholder="search ...."
-            className="h-8 w-80 mt-2 rounded-sm"
+            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-8 text-sm outline-2 placeholder:text-gray-500 h-9 mt-1"
+            placeholder="Search ..."
           />
         </div>
 
-        <div className="basis-2/5 ml-60">
+        <div className="basis-2/5 ml-40">
           <div className="flex flex-row-reverse ">
             <button
               onClick={() => {
                 setTheme(resolvedTheme === "light" ? "dark" : "light");
               }}
               type="submit"
-              className="mr-1"
+              className="mr-1 mt-2"
             >
               {" "}
               {theme === "light" ? (
                 <Image
-                  src="/sunny.png"
-                  width={20}
-                  height={20}
-                  alt="Picture of the author"
-                />
+                src="/moon.png"
+                width={20}
+                height={20}
+                alt="Picture of the author"
+                
+              />
+                
               ) : (
                 <Image
-                  src="/moon.png"
+                  src="/sunny.png"
                   width={20}
                   height={20}
                   alt="Picture of the author"
@@ -58,13 +60,13 @@ function Header() {
             </button>
 
             <button
-              className="text-white uppercase text-2sm mt-2 mr-3"
+              className="text-white text-2sm mt-2 mr-3"
               onClick={() => setShowCreateModalLogin(true)}
             >
               Login
             </button>
             <button
-              className="text-white uppercase text-2sm mt-2 mr-3"
+              className="text-white text-2sm mt-2 mr-3"
               onClick={() => setShowModalCreate(true)}
             >
               Register

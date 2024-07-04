@@ -40,20 +40,21 @@ function DetailProduct({ params }: { params: { id: number } }) {
   
   return (
     <>
+    <br />
       <Container>
         <Row>
           <Col></Col>
           <Col xs={6} style={{ border: "2px solid black", paddingLeft: "10" }}>
             <Form style={{ margin: "20px" }}>
-              <h1
+              <h2
                 style={{
                   textAlign: "center",
                   fontWeight: "bold",
-                  marginBottom: "px",
+                  marginBottom: "2px",
                 }}
               >
                 Detail Product
-              </h1>
+              </h2>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"

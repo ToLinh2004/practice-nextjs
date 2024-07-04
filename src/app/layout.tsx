@@ -35,7 +35,7 @@ export default function RootLayout({
             <div className="col-span-1">
               <SideBar />
             </div>
-            <div className="col-span-2 mr-20 -ml-20">
+            <div className="col-span-2 mr-20 -ml-40">
               <Header />
               {children}
             </div>

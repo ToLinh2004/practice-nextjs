@@ -2,7 +2,7 @@
 import DTable from "@/app/components/DTable";
 import MyPaginationComponent from "@/app/components/Pagination";
 import useSWR from "swr";
-import { Suspense, useState } from "react";
+import {useState } from "react";
 
 function ShowTable() {
   
@@ -36,9 +36,8 @@ function ShowTable() {
 
   return (
     <>
-     <Suspense fallback={<p>Loading feed...</p>}>
      <DTable products={currentPageData} />
-      </Suspense>
+
       <MyPaginationComponent
         totalPages={totalPages}
         currentPage={currentPage}
