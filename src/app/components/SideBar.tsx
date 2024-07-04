@@ -42,7 +42,7 @@ function SideBar() {
           </div>
           <div className="basis mt-1">
             {" "}
-            <Link href="/products/show" className="text-black no-underline">
+            <Link href="/admin/users" className="text-black no-underline">
               User
             </Link>
           </div>

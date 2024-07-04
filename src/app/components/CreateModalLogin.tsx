@@ -30,23 +30,20 @@ function CreateModalLogin(props: IProps) {
         `https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/`
       );
       const data = await res.json();
-      console.log(data);
       const user = data.find(
         (user: any) =>
           user.email === email &&
-          user.password === password 
+          user.password === password &&
+          user.status === 'Active'
       );
-      console.log("user", user);
-      if (user.role === 'admin') {
-        alert('Login successfully')
+      if (user) {
+        alert('Login successfully');
         setShowCreateModalLogin(false);
-        router.push('/admin');
+        router.push(user.role === 'admin' ? '/admin' : '/user');
+      } else {
+        alert('Login failed');
       }
-      else{
-        alert('Login successfully')
-        setShowCreateModalLogin(false);
-        router.push('/user')
-      }
+      
     } catch (error) {
       console.log("Error: ", error);
     }

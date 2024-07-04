@@ -9,15 +9,16 @@ import CreateModalLogin from "@/app/components/CreateModalLogin";
 function Header() {
   const { resolvedTheme, theme, setTheme } = useTheme();
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
-  const [showCreateModalLogin, setShowCreateModalLogin] =
-    useState<boolean>(false);
+  const [showCreateModalLogin, setShowCreateModalLogin] =useState<boolean>(false);
 
   return (
     <>
       <div className="flex flex-row bg-blue-600 h-12 rounded-sm sticky top-0">
         <div className="basis-3/12">
           <p className="text-white uppercase text-2sm mt-2">
-            <Link href="/admin" className="text-white no-underline ml-2">CRUD</Link>
+            <Link href="/admin" className="text-white no-underline ml-2">
+              CRUD
+            </Link>
           </p>
         </div>
         <div className="basis-6/12">
@@ -79,7 +80,6 @@ function Header() {
         showCreateModalLogin={showCreateModalLogin}
         setShowCreateModalLogin={setShowCreateModalLogin}
       />
-      
     </>
   );
 }

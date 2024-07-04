@@ -43,14 +43,15 @@ function CreateModalRegister(props: IProps) {
         alert('You need type email');
         return
       }
+      if(!password){
+        alert('You need type password');
+        return
+      }
     if(!avatar){
       alert('You need type image');
       return
     }
-    if(!password){
-      alert('You need type password');
-      return
-    }
+
     
     try {
       const res = await fetch(

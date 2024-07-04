@@ -118,3 +118,6 @@ function DTable(props: IProps) {
 }
 
 export default DTable;
+
+
+
