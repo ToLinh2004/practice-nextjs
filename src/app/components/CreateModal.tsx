@@ -61,7 +61,7 @@ function CreateModal(props: IProps) {
         onHide={() => setShowModalCreate(false)}
         backdrop="static"
         keyboard={false}
-        size="lg"
+        // size="lg"
       >
         <Modal.Header closeButton>
           <Modal.Title style={{fontWeight:'bold'}}>Create Product</Modal.Title>
