@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { useRouter } from "next/navigation";
-
+import { Errors } from "@/app/interfaces/data";
 interface IProps {
   showCreateModalLogin: boolean;
   setShowCreateModalLogin: (value: boolean) => void;
@@ -14,21 +14,25 @@ function CreateModalLogin(props: IProps) {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassWord] = useState<string>("");
-  const [errorEmail, setErrorEmail] = useState("");
-  const [errorPassword, setErrorPassword] = useState("");
+  const [errors, setErrors] = useState<Errors>({});
 
   const handleCreateLoginSubmit = async (e: any) => {
     e.preventDefault();
-
+    let errors: Errors = {};
     if (!email) {
-      setErrorEmail("Email is required");
-      return;
+      errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setErrorEmail("Email is invalid");
-      return;
+      errors.email = "Email is invalid";
     }
     if (!password) {
-      setErrorPassword("Password is required");
+      errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be more than 6 characters";
+    }
+
+    setErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
       return;
     }
     try {
@@ -53,11 +57,10 @@ function CreateModalLogin(props: IProps) {
       console.log("Error: ", error);
     }
   };
-  const Cancel = () =>{
+  const Cancel = () => {
     setShowCreateModalLogin(false);
-    setErrorEmail('');
-    setErrorPassword('');
-  }
+    setErrors({});
+  };
   return (
     <>
       <Modal
@@ -80,7 +83,7 @@ function CreateModalLogin(props: IProps) {
                 onChange={(e: any) => setEmail(e.target.value)}
               />
             </Form.Group>
-            {errorEmail && <p className="text-red-600">{errorEmail}</p>}
+            {errors.email && <p className="text-red-600">{errors.email}</p>}
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label style={{ fontWeight: "bold" }}>Password</Form.Label>
@@ -90,14 +93,13 @@ function CreateModalLogin(props: IProps) {
                 onChange={(e: any) => setPassWord(e.target.value)}
               />
             </Form.Group>
-            {errorPassword && <p className="text-red-600">{errorPassword}</p>}
+            {errors.password && (
+              <p className="text-red-600">{errors.password}</p>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={Cancel}
-          >
+          <Button variant="secondary" onClick={Cancel}>
             Cancel
           </Button>
           <Button variant="primary" onClick={handleCreateLoginSubmit}>

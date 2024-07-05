@@ -61,7 +61,7 @@ function DTable(props: IProps) {
         <thead>
           <tr className="text-center">
             <th className="border">ID</th>
-            <th className="border">Name</th>
+            <th className="border">Product Name</th>
             <th className="border">Image</th>
             <th className="border">Price</th>
             <th className="border">Quantity</th>

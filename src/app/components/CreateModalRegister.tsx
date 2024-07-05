@@ -3,49 +3,48 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-
+import Image from "next/image";
+import { Errors } from "@/app/interfaces/data";
 interface IProps {
   showModalCreate: boolean;
   setShowModalCreate: (value: boolean) => void;
 }
+
+
 function CreateModalRegister(props: IProps) {
   const { showModalCreate, setShowModalCreate } = props;
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [role, setRole] = useState<string>("user");
-  const [avatar, setAvatar] = useState<string>("");
+  const [avatar, setAvatar] = useState<string>(
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6oGwl4-Bbo1KGYjb1HxkrfHq7_Chxpyn0oA&s"
+  );
   const [status, setStatus] = useState<string>("Active");
-  const [errorFullName, setErrorFullName] = useState("");
-  const [errorAvatar, setErrorAvatar] = useState("");
-
-  const [errorEmail, setErrorEmail] = useState("");
-
-  const [errorPassword, setErrorPassword] = useState("");
-
+  const [errors, setErrors] = useState<Errors>({});
+  const [showPassword, setShowPassword] = useState<string>("password");
   const handelCreateRegisterSubmit = async (e: any) => {
     e.preventDefault();
+    let errors: Errors = {};
     if (!fullName) {
-      setErrorFullName("Full Name is required");
-      return;
+      errors.fullName = "Full Name is required";
+      console.log(!fullName)
     }
     if (!email) {
-      setErrorEmail("Email is required");
-      return;
+      errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setErrorEmail("Email is invalid");
-      return;
+      errors.email = "Email is invalid";
     }
     if (!password) {
-      setErrorPassword("Password is required");
-      return;
-    } else if(password.length <6){
-      setErrorPassword("Password must be more than 6 characters");
-      return;
+      errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be more than 6 characters";
     }
-    if (!avatar) {
-      setErrorAvatar("Avatar is required");
-      return;
+    if (!confirmPassword) {
+      errors.confirmPassword = "Confirm Password is required";
+    } else if (confirmPassword !== password) {
+      errors.confirmPassword = "Confirm password does not match password";
     }
     try {
       const res = await fetch(
@@ -55,11 +54,15 @@ function CreateModalRegister(props: IProps) {
       console.log(data);
       const user = data.find((user: any) => user.email === email);
       if (user) {
-        alert("Email already exists");
-        return;
+        errors.email = "Email already exists";
       }
     } catch (error) {
       console.log("Error: ", error);
+    }
+    setErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      return;
     }
 
     try {
@@ -92,11 +95,9 @@ function CreateModalRegister(props: IProps) {
   };
   const Cancel = () => {
     setShowModalCreate(false);
-    setErrorAvatar(""),
-      setErrorEmail(""),
-      setErrorFullName(""),
-      setErrorPassword("");
+    setErrors({});
   };
+
   return (
     <>
       <Modal
@@ -119,7 +120,9 @@ function CreateModalRegister(props: IProps) {
                 onChange={(e) => setFullName(e.target.value)}
               />
             </Form.Group>
-            {errorFullName && <p className="text-red-600">{errorFullName}</p>}
+            {errors.fullName && (
+              <p className="text-red-600">{errors.fullName}</p>
+            )}
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label style={{ fontWeight: "bold" }}>Email</Form.Label>
               <Form.Control
@@ -128,25 +131,66 @@ function CreateModalRegister(props: IProps) {
                 onChange={(e: any) => setEmail(e.target.value)}
               />
             </Form.Group>
-            {errorEmail && <p className="text-red-600">{errorEmail}</p>}
+            {errors.email && <p className="text-red-600">{errors.email}</p>}
+            <div className="w-full">
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label style={{ fontWeight: "bold" }}>Password</Form.Label>
+
+                <div className="relative">
+                  <Form.Control
+                    type={showPassword}
+                    placeholder="Enter Password"
+                    onChange={(e: any) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-0 end-0 mr-2 mt-2 rounded-e-md"
+                    onClick={() =>
+                      showPassword == "password"
+                        ? setShowPassword("text")
+                        : setShowPassword("password")
+                    }
+                  >
+                    {showPassword === "password" ? (
+                      <Image
+                        src="/view.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className=""
+                      />
+                    ) : (
+                      <Image
+                        src="/hide.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className=""
+                      />
+                    )}
+                  </button>
+                </div>
+              </Form.Group>
+            </div>
+            {errors.password && (
+              <p className="text-red-600">{errors.password}</p>
+            )}
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{ fontWeight: "bold" }}>Password</Form.Label>
+              <Form.Label style={{ fontWeight: "bold" }}>
+                Confirm Password
+              </Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Enter Password"
-                onChange={(e: any) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Form.Group>
-            {errorPassword && <p className="text-red-600">{errorPassword}</p>}
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{ fontWeight: "bold" }}>Avatar</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter URL of Image"
-                onChange={(e) => setAvatar(e.target.value)}
-              />
-            </Form.Group>
-            {errorAvatar && <p className="text-red-600">{errorAvatar}</p>}
+            {errors.confirmPassword && (
+              <p className="text-red-600">{errors.confirmPassword}</p>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
