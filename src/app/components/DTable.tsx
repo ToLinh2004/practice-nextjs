@@ -80,8 +80,8 @@ function DTable(props: IProps) {
               </td>
               <td className="border">{item.price}</td>
               <td className="border">{item.quantity}</td>
-              <td className="border md:flex-wrap">
-                <button className="bg-blue-600 text-white h-10 w-20 ml-3 mb-4 rounded">
+              <td className="border">
+                <button className="bg-blue-600 text-white h-10 w-20  mb-4 rounded">
                   <Link
                     href={`/admin/products/${item.id}`}
                     type="btn"
@@ -97,7 +97,7 @@ function DTable(props: IProps) {
                   Delete
                 </button>
                 <button
-                  className="bg-yellow-400 text-white rounded mr-3 w-20 h-10"
+                  className="bg-yellow-400 text-white rounded w-20 h-10"
                   onClick={() => (setShowModalUpdate(true), setProduct(item))}
                 >
                   Update

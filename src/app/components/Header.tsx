@@ -7,7 +7,8 @@ import CreateModalRegister from "@/app/components/CreateModalRegister";
 import CreateModalLogin from "@/app/components/CreateModalLogin";
 
 function Header() {
-  const { resolvedTheme, theme, setTheme } = useTheme();
+  const { systemTheme, theme, setTheme } = useTheme();
+  const currentTheme = theme === 'system' ? systemTheme : theme;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
   const [showCreateModalLogin, setShowCreateModalLogin] =
     useState<boolean>(false);
@@ -24,7 +25,7 @@ function Header() {
         </div>
         <div className="basis-6/12">
           <input
-            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-8 text-sm outline-2 placeholder:text-gray-500 h-9 mt-1"
+            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-8 text-sm outline-2 placeholder:text-gray-500 h-8 mt-2"
             placeholder="Search ..."
           />
         </div>
@@ -32,20 +33,17 @@ function Header() {
         <div className="basis-2/5 ml-40">
           <div className="flex flex-row-reverse ">
             <button
-              onClick={() => {
-                setTheme(resolvedTheme === "light" ? "dark" : "light");
-              }}
-              type="submit"
+              onClick={() => currentTheme == "dark"? setTheme('light'): setTheme("dark")}
               className="mr-1 mt-2"
             >
               {" "}
-              {theme === "light" ? (
+              {currentTheme === "dark" ? (
                 <Image
                 src="/moon.png"
                 width={20}
                 height={20}
                 alt="Picture of the author"
-                
+                style={{ filter: "brightness(0) invert(1)" }}
               />
                 
               ) : (

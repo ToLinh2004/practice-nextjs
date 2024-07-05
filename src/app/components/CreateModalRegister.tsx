@@ -39,6 +39,9 @@ function CreateModalRegister(props: IProps) {
     if (!password) {
       setErrorPassword("Password is required");
       return;
+    } else if(password.length <6){
+      setErrorPassword("Password must be more than 6 characters");
+      return;
     }
     if (!avatar) {
       setErrorAvatar("Avatar is required");
