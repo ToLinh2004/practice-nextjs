@@ -97,7 +97,7 @@ function DTable(props: IProps) {
                   Delete
                 </button>
                 <button
-                  className="bg-yellow-400 text-white rounded w-20 h-10"
+                  className="bg-yellow-500 text-white rounded w-20 h-10"
                   onClick={() => (setShowModalUpdate(true), setProduct(item))}
                 >
                   Update

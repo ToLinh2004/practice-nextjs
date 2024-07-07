@@ -29,7 +29,6 @@ function CreateModalRegister(props: IProps) {
     let errors: Errors = {};
     if (!fullName) {
       errors.fullName = "Full Name is required";
-      console.log(!fullName)
     }
     if (!email) {
       errors.email = "Email is required";

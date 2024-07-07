@@ -9,16 +9,16 @@
 
 [data-theme='dark'] {
   --foreground-rgb: 255, 255, 255;
-  --background-rgb: 8, 8, 8;
+  --background-rgb: 0, 0, 0;
 }
 
-body {
+/* body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
-}
+} */
 @layer base{
   body {
-      @apply dark:bg-gray-800 bg-white
+      @apply dark:bg-gray-900 bg-white
   }
   th, td{
     @apply dark:text-white

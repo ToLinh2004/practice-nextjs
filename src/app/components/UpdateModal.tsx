@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { Product } from "@/app/interfaces/data";
 import { mutate } from "swr";
+import { Errors } from "@/app/interfaces/data";
 
 interface IProps {
   showModalUpdate: boolean;
@@ -12,8 +13,8 @@ interface IProps {
   product: Product;
 }
 function UpdateModal(props: IProps) {
-  const { showModalUpdate, setShowModalUpdate, product} = props;
-  const [id,setId]=useState<number>(0)
+  const { showModalUpdate, setShowModalUpdate, product } = props;
+  const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [img, setImageFile] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
@@ -22,37 +23,40 @@ function UpdateModal(props: IProps) {
   const [errorImage, setErrorImage] = useState("");
   const [errorPrice, setErrorPrice] = useState("");
   const [errorQuantity, setErrorQuantity] = useState("");
+  const [errors, setErrors] = useState<Errors>({});
 
-
-
-  useEffect(()=>{
-    if(product && product.id){
+  useEffect(() => {
+    if (product && product.id) {
       setId(product.id),
-      setName(product.name),
-      setImageFile(product.img),
-      setPrice(product.price),
-      setQuantity(product.quantity)
-
+        setName(product.name),
+        setImageFile(product.img),
+        setPrice(product.price),
+        setQuantity(product.quantity);
     }
-  },[product])
+  }, [product]);
 
   const handleUpdateSubmit = async (e: any) => {
     e.preventDefault();
-    if(!name){
-      setErrorName("Product name is required");
-      return
+    let errors: Errors = {};
+    if (!name) {
+      errors.name = "Product name is required";
     }
-    if(!img){
-      setErrorImage("Image is required");
-      return
+    if (!img) {
+      errors.img = "Image is required";
     }
-    if(!price){
-      setErrorPrice("Price is required");
-      return
+    if (!price) {
+      errors.price = "Price is required";
+    } else if (price < 0) {
+      errors.price = "Enter greater than 0";
     }
-    if(!quantity){
-      setErrorQuantity('Quantity is required')
-      return
+    if (!quantity) {
+      errors.quantity = "Quantity is required";
+    } else if (quantity < 0) {
+      errors.quantity = "Enter greater than 0";
+    }
+    setErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      return;
     }
     const dataUpload = {
       name,
@@ -72,92 +76,91 @@ function UpdateModal(props: IProps) {
         }
       );
       const data = await res.json();
-      if(data){
-        setShowModalUpdate(false)
+      if (data) {
+        setShowModalUpdate(false);
         mutate("https://6520d291906e276284c4b0d2.mockapi.io/api/1/products");
       }
-      
     } catch (error) {
-      console.log('Error: ',error)
+      console.log("Error: ", error);
     }
-    
   };
   return (
     <>
-     <Modal
+      <Modal
         show={showModalUpdate}
         onHide={() => setShowModalUpdate(false)}
         backdrop="static"
         keyboard={false}
         // size="lg"
       >
-      <Modal.Header closeButton>
-        <Modal.Title style={{fontWeight:'bold'}}>Update Product</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label style={{fontWeight:'bold'}}>ID</Form.Label>
-            <Form.Control
-              type="text"
-              value={id}
-              readOnly
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label style={{fontWeight:'bold'}}>Product Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter product name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </Form.Group>
-          {errorProductName && <p className="text-red-600">{errorProductName}</p>}
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontWeight: "bold" }}>
+            Update Product
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{ fontWeight: "bold" }}>ID</Form.Label>
+              <Form.Control type="text" value={id} readOnly />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{ fontWeight: "bold" }}>
+                Product Name
+              </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter product name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Form.Group>
+            {errors.name && <p className="text-red-600">{errors.name}</p>}
 
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label style={{fontWeight:'bold'}}>Image</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter URL of image"
-              value={img}
-              onChange={(e) => setImageFile(e.target.value)}
-            />
-          </Form.Group>
-          {errorImage && <p className="text-red-600">{errorImage}</p>}
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{ fontWeight: "bold" }}>Image</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter URL of image"
+                value={img}
+                onChange={(e) => setImageFile(e.target.value)}
+              />
+            </Form.Group>
+            {errors.img && <p className="text-red-600">{errors.img}</p>}
 
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label style={{fontWeight:'bold'}}>Price</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter price"
-              value={price}
-              onChange={(e: any) => setPrice(e.target.value)}
-            />
-          </Form.Group>
-          {errorPrice && <p className="text-red-600">{errorPrice}</p>}
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{ fontWeight: "bold" }}>Price</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter price"
+                value={price}
+                onChange={(e: any) => setPrice(e.target.value)}
+              />
+            </Form.Group>
+            {errors.price && <p className="text-red-600">{errors.price}</p>}
 
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label style={{fontWeight:'bold'}}>Quantity</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter Quantity"
-              value={quantity}
-              onChange={(e: any) => setQuantity(e.target.value)}
-            />
-          </Form.Group>
-          {errorQuantity && <p className="text-red-600">{errorQuantity}</p>}
-
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModalUpdate(false)}>
-          Cancel
-        </Button>
-        <Button variant="primary" onClick={handleUpdateSubmit}>
-          Update
-        </Button>
-      </Modal.Footer>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label style={{ fontWeight: "bold" }}>Quantity</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter Quantity"
+                value={quantity}
+                onChange={(e: any) => setQuantity(e.target.value)}
+              />
+            </Form.Group>
+            {errors.quantity && (
+              <p className="text-red-600">{errors.quantity}</p>
+            )}
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModalUpdate(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleUpdateSubmit}>
+            Update
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

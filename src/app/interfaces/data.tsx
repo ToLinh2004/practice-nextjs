@@ -16,4 +16,9 @@ export interface IProps {
     email?: string;
     password?: string;
     confirmPassword?: string;
+    name?:string;
+    price?:string,
+    quantity?:string
+    img?:string
+
   }
