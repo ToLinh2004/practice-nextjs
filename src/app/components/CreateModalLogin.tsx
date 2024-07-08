@@ -5,6 +5,8 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { useRouter } from "next/navigation";
 import { Errors } from "@/app/interfaces/data";
+import { toast } from "react-toastify";
+import Image from "next/image";
 interface IProps {
   showCreateModalLogin: boolean;
   setShowCreateModalLogin: (value: boolean) => void;
@@ -13,8 +15,9 @@ function CreateModalLogin(props: IProps) {
   const { showCreateModalLogin, setShowCreateModalLogin } = props;
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
-  const [password, setPassWord] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<Errors>({});
+  const [showPassword, setShowPassword] = useState<string>("password");
 
   const handleCreateLoginSubmit = async (e: any) => {
     e.preventDefault();
@@ -47,11 +50,11 @@ function CreateModalLogin(props: IProps) {
           user.status === "Active"
       );
       if (user) {
-        alert("Login successfully");
+        toast.success("Login successfully");
         setShowCreateModalLogin(false);
         router.push(user.role === "admin" ? "/admin" : "/user");
       } else {
-        alert("Login failed");
+        toast.error("Login failed")
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -85,14 +88,49 @@ function CreateModalLogin(props: IProps) {
             </Form.Group>
             {errors.email && <p className="text-red-600">{errors.email}</p>}
 
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label style={{ fontWeight: "bold" }}>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter Password"
-                onChange={(e: any) => setPassWord(e.target.value)}
-              />
-            </Form.Group>
+            <div className="w-full">
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label style={{ fontWeight: "bold" }}>Password</Form.Label>
+
+                <div className="relative">
+                  <Form.Control
+                    type={showPassword}
+                    placeholder="Enter Password"
+                    onChange={(e: any) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-0 end-0 mr-2 mt-2 rounded-e-md"
+                    onClick={() =>
+                      showPassword == "password"
+                        ? setShowPassword("text")
+                        : setShowPassword("password")
+                    }
+                  >
+                    {showPassword === "password" ? (
+                      <Image
+                        src="/view.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className=""
+                      />
+                    ) : (
+                      <Image
+                        src="/hide.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className=""
+                      />
+                    )}
+                  </button>
+                </div>
+              </Form.Group>
+            </div>
             {errors.password && (
               <p className="text-red-600">{errors.password}</p>
             )}

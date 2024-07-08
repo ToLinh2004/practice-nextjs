@@ -5,11 +5,12 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { mutate } from "swr";
 import { Errors } from "@/app/interfaces/data";
+import { toast } from "react-toastify";
 interface IProps {
   showModalCreate: boolean;
   setShowModalCreate: (value: boolean) => void;
 }
-function CreateModal(props: IProps) {
+function CreateProductModal(props: IProps) {
   const { showModalCreate, setShowModalCreate } = props;
   const [name, setName] = useState<string>("");
   const [img, setImageFile] = useState<string>("");
@@ -54,12 +55,19 @@ function CreateModal(props: IProps) {
       );
       const data = await res.json();
       if (data) {
+        toast.success("Create the product successfully");
         setShowModalCreate(false);
         mutate("https://6520d291906e276284c4b0d2.mockapi.io/api/1/products");
+      } else {
+        toast.error("Create the product that failed");
       }
     } catch (error) {
       console.log("Error: ", error);
     }
+  };
+  const Cancel = () => {
+    setShowModalCreate(false);
+    setErrors({});
   };
   return (
     <>
@@ -120,7 +128,7 @@ function CreateModal(props: IProps) {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModalCreate(false)}>
+          <Button variant="secondary" onClick={Cancel}>
             Cancel
           </Button>
           <Button variant="primary" onClick={handelCreateSubmit}>
@@ -132,4 +140,4 @@ function CreateModal(props: IProps) {
   );
 }
 
-export default CreateModal;
+export default CreateProductModal;

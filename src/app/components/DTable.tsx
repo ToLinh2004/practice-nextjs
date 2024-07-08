@@ -2,7 +2,7 @@
 import Image from "react-bootstrap/Image";
 import { useState } from "react";
 import { Product, IProps } from "@/app/interfaces/data";
-import CreateModal from "@/app/components/CreateModal";
+import CreateModal from "@/app/components/CreateProductModal";
 import Link from "next/link";
 import { mutate } from "swr";
 import UpdateModal from "@/app/components/UpdateModal";

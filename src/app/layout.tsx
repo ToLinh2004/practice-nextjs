@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer,Zoom} from "react-toastify";
 import { ThemeProvider } from "next-themes";
 import SideBar from "@/app/components/SideBar";
 import Header from "@/app/components/Header";
@@ -23,16 +25,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" >
+    <html lang="en">
       <body className={`${inter.className}`}>
-        <ThemeProvider
-          attribute="class"
-        >
+        <ThemeProvider attribute="class">
           <div className="grid grid-cols-3 ">
             <div className="col-span-1">
               <SideBar />
             </div>
             <div className="col-span-2 mr-20 -ml-40">
+              <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                className="mr-14"
+                transition= {Zoom}
+              />
               <Header />
               {children}
             </div>

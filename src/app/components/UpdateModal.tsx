@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import { Product } from "@/app/interfaces/data";
 import { mutate } from "swr";
 import { Errors } from "@/app/interfaces/data";
+import { toast } from "react-toastify";
 
 interface IProps {
   showModalUpdate: boolean;
@@ -19,10 +20,6 @@ function UpdateModal(props: IProps) {
   const [img, setImageFile] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
-  const [errorProductName, setErrorName] = useState("");
-  const [errorImage, setErrorImage] = useState("");
-  const [errorPrice, setErrorPrice] = useState("");
-  const [errorQuantity, setErrorQuantity] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
   useEffect(() => {
@@ -77,12 +74,19 @@ function UpdateModal(props: IProps) {
       );
       const data = await res.json();
       if (data) {
+        toast.success("Updated the product successfully");
         setShowModalUpdate(false);
         mutate("https://6520d291906e276284c4b0d2.mockapi.io/api/1/products");
+      } else {
+        toast.error("Updated product failed");
       }
     } catch (error) {
       console.log("Error: ", error);
     }
+  };
+  const Cancel = () => {
+    setShowModalUpdate(false);
+    setErrors({});
   };
   return (
     <>
@@ -154,7 +158,7 @@ function UpdateModal(props: IProps) {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModalUpdate(false)}>
+          <Button variant="secondary" onClick={Cancel}>
             Cancel
           </Button>
           <Button variant="primary" onClick={handleUpdateSubmit}>

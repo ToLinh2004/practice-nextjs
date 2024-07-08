@@ -29,7 +29,7 @@ function PaginationComponent({
   return (
     <>
       <nav
-        className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+        className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 sticky bottom-0"
         aria-label="Table navigation"
       >
         <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">

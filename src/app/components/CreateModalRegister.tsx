@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Image from "next/image";
 import { Errors } from "@/app/interfaces/data";
+import { toast } from "react-toastify";
 interface IProps {
   showModalCreate: boolean;
   setShowModalCreate: (value: boolean) => void;
@@ -85,7 +86,7 @@ function CreateModalRegister(props: IProps) {
       );
       const data = await res.json();
       if (data) {
-        alert("Register successfully");
+        toast.success("Register successdully");
         setShowModalCreate(false);
       }
     } catch (error) {
@@ -177,16 +178,48 @@ function CreateModalRegister(props: IProps) {
             {errors.password && (
               <p className="text-red-600">{errors.password}</p>
             )}
+            <div className="w-full">
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label style={{ fontWeight: "bold" }}>
                 Confirm Password
               </Form.Label>
-              <Form.Control
+
+                <div className="relative">
+                <Form.Control
                 type="password"
                 placeholder="Enter password"
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-            </Form.Group>
+                  <button
+                    type="button"
+                    className="absolute top-0 end-0 mr-2 mt-2 rounded-e-md"
+                    onClick={() =>
+                      showPassword == "password"
+                        ? setShowPassword("text")
+                        : setShowPassword("password")
+                    }
+                  >
+                    {showPassword === "password" ? (
+                      <Image
+                        src="/view.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className=""
+                      />
+                    ) : (
+                      <Image
+                        src="/hide.png"
+                        alt=""
+                        width={20}
+                        height={20}
+                        className=""
+                      />
+                    )}
+                  </button>
+                </div>
+              </Form.Group>
+            </div>
             {errors.confirmPassword && (
               <p className="text-red-600">{errors.confirmPassword}</p>
             )}

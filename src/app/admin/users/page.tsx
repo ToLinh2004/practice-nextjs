@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import MyPaginationComponent from "@/app/components/Pagination";
+
 type User = {
   id: number;
   fullName: string;
@@ -52,7 +54,22 @@ function ShowUser() {
   useEffect(() => {
     getAllUser();
   }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7; // Số sản phẩm trên mỗi trang
 
+  // Tính tổng số trang
+  const totalItems = users ? users.length : 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage); //Round up the number of pages
+
+  // Xử lý sự kiện khi thay đổi trang
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Lấy dữ liệu cho trang hiện tại
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPageData = users ? users.slice(startIndex, endIndex) : [];
   return (
     <>
       <button className="bg-blue-600 text-white h-10 w-40 mb-4 mt-4 rounded float-left">
@@ -71,7 +88,7 @@ function ShowUser() {
           </tr>
         </thead>
         <tbody>
-          {users?.map((item) => (
+          {currentPageData?.map((item) => (
             <tr key={item.id} className="border text-center">
               <td className="border">{item.id}</td>
               <td className="border">{item.fullName}</td>
@@ -97,6 +114,7 @@ function ShowUser() {
           ))}
         </tbody>
       </table>
+          <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange}/>
     </>
   );
 }
