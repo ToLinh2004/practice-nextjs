@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+[data-theme='dark'] {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 0, 0, 0;
+}
+
+/* body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+} */
+@layer base {
+  .filter-grayscale {
+    filter: grayscale(100%);
+}
+  body {
+    @apply bg-gray-200 dark:bg-gray-900;
+  }
+  th,
+  td {
+    @apply  dark:text-white;
+  }
+  input {
+    @apply dark:bg-white;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+
+}
