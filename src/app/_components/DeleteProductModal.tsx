@@ -1,5 +1,4 @@
 'use client';
-import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -7,34 +6,17 @@ import { Product } from '@/app/types';
 import { mutate } from 'swr';
 import { toast } from 'react-toastify';
 import { deleteProduct } from '@/app/services/config';
+import Image from 'next/image';
 
 interface IProps {
   showModalDelete: boolean;
   setShowModalDelete: (value: boolean) => void;
   product: Product;
 }
-export default function DeleteProductModal({
-  showModalDelete,
-  setShowModalDelete,
-  product,
-}: IProps) {
-  const [id, setId] = useState<number>(0);
-  const [name, setName] = useState<string>('');
-  const [img, setImageFile] = useState<string>('');
-  const [price, setPrice] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(0);
-  useEffect(() => {
-    if (product && product.id) {
-      setId(product.id),
-        setName(product.name),
-        setImageFile(product.img),
-        setPrice(product.price),
-        setQuantity(product.quantity);
-    }
-  }, [product]);
+export default function DeleteProductModal({ showModalDelete, setShowModalDelete, product }: IProps) {
   const handleDelete = async () => {
     try {
-      const res = await deleteProduct(id);
+      const res = await deleteProduct(product.id);
       if (res) {
         toast.success('Deleted product successfully');
         setShowModalDelete(false);
@@ -49,92 +31,64 @@ export default function DeleteProductModal({
   };
   return (
     <>
-      <Modal
-        show={showModalDelete}
-        onHide={() => setShowModalDelete(false)}
-        backdrop="static"
-        keyboard={false}
-      >
+      <Modal show={showModalDelete} onHide={() => setShowModalDelete(false)} backdrop="static" keyboard={false} dialogClassName="modal-lg">
         <Modal.Header closeButton>
-          <Modal.Title
-            style={{
-              fontWeight: 'bold',
-            }}
-          >
-            Delete Product
-          </Modal.Title>
+          <Modal.Title className="text-xl font-bold text-blue-600">Delete Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                ID
-              </Form.Label>
-              <Form.Control type="text" value={id} readOnly />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Product Name
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter product name"
-                value={name}
-                readOnly
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Image
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter URL of image"
-                value={img}
-                readOnly
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Price
-              </Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter price"
-                value={price}
-                readOnly
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Quantity
-              </Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter Quantity"
-                value={quantity}
-                readOnly
-              />
+            <div className="flex space-x-4">
+              <div className="w-1/2">
+                <Form.Group className="mb-2" controlId="productName">
+                  <Form.Label className="text-md font-normal">Product Name</Form.Label>
+                  <Form.Control type="text" placeholder="Enter product name" value={product.name} className="mt-1 rounded-md border p-2" />
+                </Form.Group>
+
+                <Form.Group className="mb-2" controlId="productDescription">
+                  <Form.Label className="text-md font-normal">Description</Form.Label>
+                  <Form.Control type="text" placeholder="Enter description" value={product.description} className="mt-1 rounded-md border p-2" />
+                </Form.Group>
+
+                <Form.Group className="mb-2" controlId="productPrice">
+                  <Form.Label className="text-md font-normal">Price</Form.Label>
+                  <Form.Control type="number" placeholder="Enter price" min="0" value={product.price} className="mt-1 rounded-md border p-2" />
+                </Form.Group>
+              </div>
+
+              <div className="w-1/2">
+                <Form.Group className="mb-1" controlId="productCategory">
+                  <Form.Label className="text-md font-normal">Category</Form.Label>
+                  <Form.Control type="text" placeholder="Enter product name" value={product.categoryName} className="mt-1 rounded-md border p-2" />
+                </Form.Group>
+
+                <Form.Group className="" controlId="productImage">
+                  <Form.Label className="text-md font-normal">Image</Form.Label>
+
+                  <div>
+                    <Image src={product.img} width={200} height={80} alt="Product Image" className="h-40 w-72 rounded object-cover" />
+                  </div>
+                </Form.Group>
+              </div>
+            </div>
+
+            <Form.Group className="mb-2" controlId="productSize">
+              <div className="mt-2">
+                <span>Size</span>
+                <div className="mt-2 grid grid-cols-4 gap-6 sm:grid-cols-1 sm:gap-4">
+                  {product.size.map((s, index) => (
+                    <div key={index} className="mb-2 flex items-center space-x-2">
+                      <input type="text" value={s.size} placeholder="Size" className="w-16 rounded-sm border p-1 focus:outline-none" />
+                      <input
+                        type="number"
+                        min="0"
+                        value={s.quantity}
+                        placeholder="Quantity"
+                        className="w-16 rounded-sm border p-1 focus:outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </Form.Group>
           </Form>
         </Modal.Body>

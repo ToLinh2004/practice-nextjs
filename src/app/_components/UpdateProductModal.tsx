@@ -4,190 +4,296 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { mutate } from 'swr';
-import { Errors, Product } from '@/app/types';
+import { Errors, InputEvent, Product, Size } from '@/app/types';
 import { toast } from 'react-toastify';
 import { updateProduct } from '@/app/services/config';
+import Image from 'next/image';
+import Compressor from 'compressorjs';
 
 interface IProps {
   showModalUpdate: boolean;
   setShowModalUpdate: (value: boolean) => void;
   product: Product;
 }
-export default function UpdateProductModal(props: IProps) {
-  const { showModalUpdate, setShowModalUpdate, product } = props;
+
+export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate, product }: IProps) {
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>('');
-  const [img, setImageFile] = useState<string>('');
+  const [img, setImage] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(0);
+  const [categoryName, setCategoryName] = useState<string>('');
+  const [status, setStatus] = useState<string>('active');
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [discount, setDiscount] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [file, setImageFile] = useState<File | undefined>(undefined);
 
   useEffect(() => {
     if (product && product.id) {
-      setId(product.id),
-        setName(product.name),
-        setImageFile(product.img),
-        setPrice(product.price),
-        setQuantity(product.quantity);
+      setId(product.id);
+      setName(product.name);
+      setImage(product.img);
+      setDescription(product.description);
+      setPrice(product.price);
+      setCategoryName(product.categoryName || '');
+      setStatus(product.status || 'active');
+      setSizes(product.size || []);
+      setDiscount(product.discount || false);
     }
   }, [product]);
 
-  const handleUpdateSubmit = async (e: any) => {
+  // Xử lý thay đổi số lượng kích thước
+  const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newSizes = [...sizes];
+    const quantity = parseInt(e.target.value, 10);
+
+    // Kiểm tra số lượng không âm
+    if (!isNaN(quantity) && quantity >= 0) {
+      newSizes[index].quantity = quantity;
+    } else {
+      newSizes[index].quantity = 0;
+    }
+
+    setSizes(newSizes);
+  };
+
+  // const handlePrice =(e:React.ChangeEvent<HTMLInputElement>,price:number)=>{
+  //   if(price>0){
+
+  //   }
+  // }
+
+  const handleUpdateSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     let errors: Errors = {};
-    if (!name) {
-      errors.name = 'Product name is required';
+
+    // Validate input fields
+    if (!name) errors.name = 'Product name is required';
+    if (!img) errors.img = 'Image is required';
+    if (!description) errors.description = 'Description is required';
+    if (!price) errors.price = 'Price is required';
+    else if (price < 0) errors.price = 'Price must be greater than 0';
+
+    // Validate file
+    if (file) {
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp', 'image/gif'];
+      const maxSize = 100000; // 100 KB
+
+      if (!allowedTypes.includes(file.type)) errors.file = 'Unsupported file type. Allowed types: PNG, JPG, SVG, WEBP, GIF';
+      if (file.size > maxSize) errors.file = 'File size too large. Maximum size is 100 KB';
     }
-    if (!img) {
-      errors.img = 'Image is required';
-    }
-    if (!price) {
-      errors.price = 'Price is required';
-    } else if (price < 0) {
-      errors.price = 'Enter greater than 0';
-    }
-    if (!quantity) {
-      errors.quantity = 'Quantity is required';
-    } else if (quantity < 0) {
-      errors.quantity = 'Enter greater than 0';
-    }
+
+    const uniqueSizes = new Set();
+    sizes.forEach((s) => {
+      if (uniqueSizes.has(s.size)) {
+        errors.size = 'Size already exists';
+      } else {
+        uniqueSizes.add(s.size);
+      }
+    });
+
     setErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-    const dataUpload = {
+    if (Object.keys(errors).length > 0) return;
+
+    const dataUpload: Product = {
+      id,
       name,
       img,
       price,
-      quantity,
+      description,
+      categoryName,
+      status,
+      size: sizes,
+      discount,
     };
+
     try {
       const res = await updateProduct(id, dataUpload);
       if (res) {
-        toast.success('Updated the product successfully');
+        toast.success('Product updated successfully');
         setShowModalUpdate(false);
         mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
       } else {
-        toast.error('Updated product failed');
+        toast.error('Failed to update product');
       }
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error updating product:', error);
     }
   };
+
+const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    new Compressor(file, {
+      quality: 0.6, // Điều chỉnh chất lượng theo nhu cầu
+      success(result) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImage(reader.result as string);
+          setImageFile(result as File);
+        };
+        reader.readAsDataURL(result as File);
+      },
+      error(err) {
+        console.error('Compression error:', err);
+      },
+    });
+  }
+};
+
   const handleCancel = () => {
     setShowModalUpdate(false);
     setErrors({});
+    if (product) {
+      setId(product.id);
+      setName(product.name);
+      setImage(product.img);
+      setDescription(product.description);
+      setPrice(product.price);
+      setCategoryName(product.categoryName || '');
+      setStatus(product.status || 'active');
+      setSizes(product.size || []);
+      setDiscount(product.discount || false);
+    }
   };
+
   return (
-    <>
-      <Modal
-        show={showModalUpdate}
-        onHide={() => setShowModalUpdate(false)}
-        backdrop="static"
-        keyboard={false}
-        // size="lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title
-            style={{
-              fontWeight: 'bold',
-            }}
-          >
-            Update Product
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                ID
-              </Form.Label>
-              <Form.Control type="text" value={id} readOnly />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Product Name
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter product name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Form.Group>
-            {errors.name && <p className="text-red-600">{errors.name}</p>}
+    <Modal show={showModalUpdate} onHide={() => setShowModalUpdate(false)} backdrop="static" keyboard={false} dialogClassName="modal-lg">
+      <Modal.Header>
+        <Modal.Title className="text-xl font-bold text-blue-600">Update Product</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <div className="flex space-x-4">
+            <div className="w-1/2">
+              <Form.Group className="mb-2" controlId="productName">
+                <Form.Label className="text-md font-normal">Product Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter product name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-1 rounded-md border p-2"
+                />
+                {errors.name && <p className="mt-1 text-red-600">{errors.name}</p>}
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Image
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter URL of image"
-                value={img}
-                onChange={(e) => setImageFile(e.target.value)}
-              />
-            </Form.Group>
-            {errors.img && <p className="text-red-600">{errors.img}</p>}
+              <Form.Group className="mb-2" controlId="productDescription">
+                <Form.Label className="text-md font-normal">Description</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="mt-1 rounded-md border p-2"
+                />
+                {errors.description && <p className="mt-1 text-red-600">{errors.description}</p>}
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Price
-              </Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter price"
-                value={price}
-                onChange={(e: any) => setPrice(e.target.value)}
-              />
-            </Form.Group>
-            {errors.price && <p className="text-red-600">{errors.price}</p>}
+              <Form.Group className="mb-2" controlId="productPrice">
+                <Form.Label className="text-md font-normal">Price</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter price"
+                  min="0"
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  className="mt-1 rounded-md border p-2"
+                />
+                {errors.price && <p className="mt-1 text-red-600">{errors.price}</p>}
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label
-                style={{
-                  fontWeight: 'bold',
-                }}
-              >
-                Quantity
-              </Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter Quantity"
-                value={quantity}
-                onChange={(e: any) => setQuantity(e.target.value)}
-              />
-            </Form.Group>
-            {errors.quantity && (
-              <p className="text-red-600">{errors.quantity}</p>
-            )}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleUpdateSubmit}>
-            Update
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+              <Form.Group>
+                <Form.Label className="text-md font-normal">Discount</Form.Label>
+                <div className="flex items-center space-x-4">
+                  <Form.Check type="radio" id="discountYes" label="Yes" checked={discount} onChange={() => setDiscount(true)} />
+                  <Form.Check type="radio" id="discountNo" label="No" checked={!discount} onChange={() => setDiscount(false)} />
+                </div>
+              </Form.Group>
+            </div>
+
+            <div className="w-1/2">
+              <Form.Group className="mb-2" controlId="productImage">
+                <Form.Label className="text-md font-normal">Image</Form.Label>
+                <div className="flex items-center space-x-4">
+                  <label
+                    htmlFor="uploadFile"
+                    className="flex h-24 w-64 cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-gray-300 bg-gray-50 p-4 text-center"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="mb-2 w-12 fill-gray-500" viewBox="0 0 32 32">
+                      <path d="M23.75 11.044a7.99 7.99 0 0 0-15.5-.009A8 8 0 0 0 9 27h3a1 1 0 0 0 0-2H9a6 6 0 0 1-.035-12 1.038 1.038 0 0 0 1.1-.854 5.991 5.991 0 0 1 11.862 0A1.08 1.08 0 0 0 23 13a6 6 0 0 1 0 12h-3a1 1 0 0 0 0 2h3a8 8 0 0 0 .75-15.956z" />
+                      <path d="M20.293 19.707a1 1 0 0 0 1.414-1.414l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 1.414 1.414L15 16.414V29a1 1 0 0 0 2 0V16.414z" />
+                    </svg>
+                    Upload file
+                    <input type="file" id="uploadFile" className="hidden" onChange={handleImageUpload} />
+                    <p className="mt-2 text-xs font-medium text-gray-400">PNG, JPG, SVG, WEBP, and GIF are allowed.</p>
+                  </label>
+                  {img && (
+                    <div>
+                      <Image src={img} width={80} height={80} alt="Product Image" className="h-20 w-20 rounded object-cover" />
+                    </div>
+                  )}
+                </div>
+                {errors.file && <p className="mt-1 text-red-600">{errors.file}</p>}
+              </Form.Group>
+
+              <Form.Group className="mb-2" controlId="productCategory">
+                <Form.Label className="text-md font-normal">Category</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  className="mt-1 rounded-md border p-2"
+                >
+                  <option value="fashion">Fashion Shoes</option>
+                  <option value="sport">Sport Shoes</option>
+                </Form.Control>
+              </Form.Group>
+            </div>
+          </div>
+
+          <Form.Group className="mb-2" controlId="productSize">
+            <div className="mt-2">
+              <span>Size</span>
+              <div className="mt-2 grid grid-cols-4 gap-6 sm:grid-cols-1 sm:gap-4">
+                {sizes.map((s, index) => (
+                  <div key={index} className="mb-2 flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={s.size}
+                      placeholder="Size"
+                      onChange={(e) => {
+                        const newSizes = [...sizes];
+                        newSizes[index] = { ...newSizes[index], size: e.target.value };
+                        setSizes(newSizes);
+                      }}
+                      className="w-16 rounded-sm border p-1 focus:outline-none"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      value={s.quantity}
+                      placeholder="Quantity"
+                      onChange={(e) => handleSizeChange(e, index)}
+                      className="w-16 rounded-sm border p-1 focus:outline-none"
+                    />
+                  </div>
+                ))}
+              </div>
+              {errors.size && <p className="mt-1 text-red-600">{errors.size}</p>}
+            </div>
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleCancel}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleUpdateSubmit}>
+          Update
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }

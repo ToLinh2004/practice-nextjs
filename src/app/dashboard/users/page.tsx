@@ -1,41 +1,51 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import MyPaginationComponent from '@/app/_components/Pagination';
 import { toast } from 'react-toastify';
 import { User } from '@/app/types';
 import { Search } from '@/app/_components/Search';
-export default function ShowUser() {
-  const [users, setUser] = useState<User[]>([]);
-  const getAllUser = async () => {
-    try {
-      const res = await fetch(
-        'https://6520d291906e276284c4b0d2.mockapi.io/api/1/users',
-      );
-      const user = await res.json();
-      setUser(user);
-    } catch (error) {
-      throw new Error('Fetching data fail');
-    }
+import LoadingPage from '@/app/_components/Loading';
+import useSWR from 'swr';
+import { mutate } from 'swr';
+import NotSearch from '@/app/_components/NotSearch';
+import { useLoginContext } from '@/app/context/UserContext';
+
+export default function ShowUser({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
   };
+}) {
+  const { loggedIn, setLoggedIn, user } = useLoginContext();
+
+  const query = searchParams?.query || '';
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data, isLoading } = useSWR('https://6520d291906e276284c4b0d2.mockapi.io/api/1/users', fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
   const updateStatus = async (id: number, status: string) => {
     try {
       const changedStatus = status === 'Active' ? 'Inactive' : 'Active';
-      const res = await fetch(
-        `https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/${id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: changedStatus,
-          }),
+      const res = await fetch(`https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          status: changedStatus,
+        }),
+      });
       if (res.ok) {
-        setUser((users) =>
-          users.map((user) =>
+        setUsers((data) =>
+          data.map((user) =>
             user.id === id
               ? {
                   ...user,
@@ -44,149 +54,115 @@ export default function ShowUser() {
               : user,
           ),
         );
+        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/users');
+
         toast.success('Updated status successfully');
       } else {
-        throw new Error('Updating status failed');
+        toast.error('Updating status failed');
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error('Updating status failed:', error);
     }
   };
-  useEffect(() => {
-    getAllUser();
-  }, []);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  let displayedUsers: User[] = [];
+  let totalPages = 0;
+  let totalItems = 0;
 
-  const totalItems = users ? users.length : 0;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  if (data && data.length > 0) {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const filteredUsers = data.filter((user: User) => user.fullName.toLowerCase().includes(query.toLowerCase()));
+    displayedUsers = filteredUsers.slice(startIndex, endIndex);
+    totalItems = filteredUsers.length;
+    totalPages = Math.ceil(totalItems / itemsPerPage);
+  }
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+  if (isLoading)
+    return (
+      <div>
+        <LoadingPage />
+      </div>
+    );
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = users ? users.slice(startIndex, endIndex) : [];
   return (
     <>
+      <>
+        {loggedIn && user.role ? (
+          <>
+            {displayedUsers.length === 0 ? (
+              <NotSearch query={query} link="/dashboard/users" />
+            ) : (
+              <section className="pl-4 pt-20 sm:pl-0">
+                <div className="xl:mb-0 xl:w-full mx-auto mb-12 mt-7 w-full sm:mb-4">
+                  <div className="mb-6 flex w-full min-w-0 flex-col break-words rounded bg-gray-100">
+                    <div className="mb-0 rounded-t border-0 px-4 sm:h-16">
+                      <div className="ml-2 flex items-center sm:h-20">
+                        <div className="my-4 flex-1 flex-grow justify-start sm:h-10 md:px-4">
+                          <Search />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="block w-full overflow-x-auto">
+                      <table className="w-full border-collapse items-center">
+                        <thead className="">
+                          <tr>
+                            {['ID', 'Image', 'Full Name', 'Email', 'Date', 'Phone', 'Address', 'Role', 'Status'].map((header) => (
+                              <th
+                                key={header}
+                                scope="col"
+                                className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600 sm:px-6"
+                              >
+                                {header}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {displayedUsers?.map((item) => (
+                            <tr key={item.id} className="border-1 transition duration-300 ease-in-out hover:bg-gray-100">
+                              <td className="whitespace-nowrap py-4 pl-2 text-sm font-medium text-gray-900 sm:px-6">{item.id}</td>
+                              <td className="whitespace-nowrap py-4 pl-2 sm:px-6">
+                                <Image src={item.avatar} alt="" height={100} width={100} className="" />
+                              </td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 sm:px-6">{item.fullName}</td>
+                              <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-center text-sm text-gray-900 sm:px-6">
+                                {item.email}
+                              </td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 sm:px-6">{item.date}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 sm:px-6">{item.phone}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 sm:px-6">{item.address}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 sm:px-6">{item.role}</td>
 
-      <div className=" px-2 py-10">
-      <Search />
-        <div id="features" className="mx-auto">
-      
-          <ul className="mt-16 grid grid-cols-1 gap-6 text-center md:grid-cols-3 mb-6">
-            {currentPageData?.map((item) => (
-              <li className="rounded-xl bg-white px-6 py-4 shadow-sm mt-10 transition-transform duration-200 hover:scale-105">
-                
-                  <div className="mx-auto -mt-16 h-32 w-32 overflow-hidden rounded-full border-4 border-white">
-                    <img
-                      className="h-32 object-cover object-center"
-                      src={item.avatar}
-                      alt="Woman looking front"
-                    />
+                              <td className="whitespace-nowrap py-4 text-center">
+                                <button
+                                  className="transition-transform duration-200 hover:scale-105"
+                                  onClick={() => updateStatus(item.id, item.status)}
+                                >
+                                  {item.status === 'Active' ? (
+                                    <Image src="/active.png" alt="" height={28} width={28} />
+                                  ) : (
+                                    <Image src="/inActive.png" alt="" height={28} width={28} />
+                                  )}
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  <h3 className="font-display group-hover:text-primary-500 my-3 font-medium text-blue-600">
-                    {item.fullName}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-6 text-black">
-                    <b>Email:</b> {item.email}
-                  </p>
-                  <p className="mt-1.5 text-sm leading-6 text-black">
-                    <b>Address:</b> {item.address}
-                  </p>
-
-                  <div className="flex gap-4 px-10 py-2">
-                  
-                    <button className="w-full rounded-full border border-purple-200 px-2 py-1 text-sm font-semibold hover:border-transparent hover:bg-blue-600 hover:text-white "   onClick={() => updateStatus(item.id, item.status)}>
-                      {item.status}
-                    </button>
-                    <button className="w-full rounded-full border border-purple-200 px-2 py-1 text-sm font-semibold hover:border-transparent hover:bg-blue-600 hover:text-white ">
-                      View more
-                    </button>
-                  </div>
-               
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div></div>
-      </div>
-
-      {/* <div className="mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-lg hover:shadow-blue-400">
-        <div className="relative">
-          <img
-            className="h-48 w-full object-cover"
-            src="https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw4fHx1c2VyfGVufDB8MHx8fDE2OTQwOTU5Nzl8MA&ixlib=rb-4.0.3&q=80&w=1080"
-            alt="Profile Image"
-          />
-        </div>
-        <div className="px-6 py-4">
-          <div className="text-xl font-semibold text-gray-800">John Doe</div>
-          <p className="text-gray-600">Front-end Developer</p>
-        </div>
-        <div className="px-6 py-4">
-          <span className="inline-block rounded-full bg-teal-200 px-2 py-1 font-semibold text-teal-900">
-            Web
-          </span>
-          <span className="inline-block rounded-full bg-indigo-200 px-2 py-1 font-semibold text-indigo-900">
-            UI/UX
-          </span>
-          <span className="inline-block rounded-full bg-purple-200 px-2 py-1 font-semibold text-purple-900">
-            Design
-          </span>
-        </div>
-        <div className="px-6 py-4">
-          <a href="#" className="text-blue-500 hover:underline">
-            View Profile
-          </a>
-        </div>
-      </div> */}
-
-      {/* <table className="w-full table-auto border-1">
-        <thead>
-          <tr className="text-center">
-            <th className="border w-12 hover:text-blue-600">ID</th>
-            <th className="border w-60 hover:text-blue-600">Image</th>
-            <th className="border w-80 hover:text-blue-600">Full Name</th>
-           
-            <th className="border w-30 hover:text-blue-600">Email</th>
-            <th className="border w-20 hover:text-blue-600">Role</th>
-            <th className="border hover:text-blue-600">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentPageData?.map((item) => (
-            <tr key={item.id} className="border text-center">
-              <td className="border hover:text-blue-600">{item.id}</td>
-              <td className="">
-                <Image src={item.avatar} alt="" height={180} width={180} className='mx-7 my-7' />
-              </td>
-              <td className="border hover:text-blue-600">{item.fullName}</td>
-             
-              <td className="border hover:text-blue-600">{item.email}</td>
-              <td className="border hover:text-blue-600">{item.role}</td>
-              <td className="border">
-                <button
-                  className={`h-10 w-20 rounded ${
-                    item.status === 'Active'
-                      ? 'bg-blue-600 text-white hover:scale-105'
-                      : 'bg-red-600 text-white hover:scale-105 transition-transform duration-200'
-                  }`}
-                  onClick={() => updateStatus(item.id, item.status)}
-                >
-                  {item.status}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
-      <MyPaginationComponent
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
+                </div>
+              </section>
+            )}
+            <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+          </>
+        ) : (
+          ''
+        )}
+      </>
     </>
   );
 }
