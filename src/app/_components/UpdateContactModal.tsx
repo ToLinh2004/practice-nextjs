@@ -1,10 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { mutate } from 'swr';
-import { Errors, InputEvent, Product, MouseEvent } from '@/app/types';
+import { MouseEvent } from '@/app/types';
 import { toast } from 'react-toastify';
 import { updateContact } from '@/app/services/config';
 import { Contact } from '@/app/types';

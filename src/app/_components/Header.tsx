@@ -207,7 +207,6 @@ export default function Header() {
               <Link href="/contacts" className="text-white">
                 <p className="text-sm hover:text-black">Contact us</p>
               </Link>
-              
             </div>
           </div>
         </div>

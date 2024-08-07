@@ -122,25 +122,25 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
     }
   };
 
-const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    new Compressor(file, {
-      quality: 0.6, // Điều chỉnh chất lượng theo nhu cầu
-      success(result) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImage(reader.result as string);
-          setImageFile(result as File);
-        };
-        reader.readAsDataURL(result as File);
-      },
-      error(err) {
-        console.error('Compression error:', err);
-      },
-    });
-  }
-};
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      new Compressor(file, {
+        quality: 0.6, // Điều chỉnh chất lượng theo nhu cầu
+        success(result) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImage(reader.result as string);
+            setImageFile(result as File);
+          };
+          reader.readAsDataURL(result as File);
+        },
+        error(err) {
+          console.error('Compression error:', err);
+        },
+      });
+    }
+  };
 
   const handleCancel = () => {
     setShowModalUpdate(false);

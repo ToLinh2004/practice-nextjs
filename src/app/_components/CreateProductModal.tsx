@@ -60,7 +60,6 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
     setNewSize('');
   };
 
- 
   const handleRemoveSize = (index: number) => {
     const newSizes = sizes.filter((_, i) => i !== index);
     setSizes(newSizes);
@@ -70,13 +69,11 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
     e.preventDefault();
     let errorMessages: Errors = {};
 
-
     if (!name) errorMessages.name = 'Product name is required';
     if (!description) errorMessages.description = 'Description is required';
     if (!img) errorMessages.img = 'Image is required';
     if (price <= 0) errorMessages.price = 'Enter a valid price greater than 0';
 
- 
     const uniqueSizes = new Set();
     sizes.forEach((s) => {
       if (uniqueSizes.has(s.size)) {
@@ -99,7 +96,6 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
 
     setErrors(errorMessages);
 
-   
     if (Object.keys(errorMessages).length > 0) return;
 
     try {
@@ -116,25 +112,25 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
     }
   };
 
-const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    new Compressor(file, {
-      quality: 0.6, // Điều chỉnh chất lượng theo nhu cầu
-      success(result) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImage(reader.result as string);
-          setImageFile(result as File);
-        };
-        reader.readAsDataURL(result as File);
-      },
-      error(err) {
-        console.error('Compression error:', err);
-      },
-    });
-  }
-};
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      new Compressor(file, {
+        quality: 0.6, // Điều chỉnh chất lượng theo nhu cầu
+        success(result) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImage(reader.result as string);
+            setImageFile(result as File);
+          };
+          reader.readAsDataURL(result as File);
+        },
+        error(err) {
+          console.error('Compression error:', err);
+        },
+      });
+    }
+  };
 
   const cancel = () => {
     setShowModalCreate(false);

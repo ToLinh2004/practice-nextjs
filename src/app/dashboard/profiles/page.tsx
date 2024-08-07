@@ -76,7 +76,6 @@ export default function AdminProfile() {
     }
   };
 
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -85,7 +84,7 @@ export default function AdminProfile() {
         success(result) {
           const reader = new FileReader();
           reader.onloadend = () => {
-             setAvatar(reader.result as string);
+            setAvatar(reader.result as string);
             setImageFile(result as File);
           };
           reader.readAsDataURL(result as File);
@@ -96,7 +95,7 @@ export default function AdminProfile() {
       });
     }
   };
- 
+
   return (
     <>
       {loggedIn ? (

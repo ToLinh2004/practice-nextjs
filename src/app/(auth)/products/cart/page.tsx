@@ -95,7 +95,6 @@ export default function CartPage() {
     }
   };
 
-
   return (
     <>
       {carts.length === 0 ? (
