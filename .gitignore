@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+.prettierrc.mjs
 
 # testing
 /coverage
@@ -15,7 +16,7 @@
 
 # production
 /build
-
+/.vscode
 # misc
 .DS_Store
 *.pem
@@ -27,10 +28,11 @@ yarn-error.log*
 
 # local env files
 .env*.local
-
+.env
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
