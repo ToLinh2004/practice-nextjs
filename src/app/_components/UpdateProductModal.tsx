@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { mutate } from 'swr';
-import { Errors, InputEvent, Product, Size } from '@/app/types';
+import { Errors, Product, Size } from '@/app/types';
 import { toast } from 'react-toastify';
 import { updateProduct } from '@/app/services/config';
 import Image from 'next/image';
@@ -66,7 +66,7 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
 
   const handleUpdateSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    let errors: Errors = {};
+    const errors: Errors = {};
 
     // Validate input fields
     if (!name) errors.name = 'Product name is required';

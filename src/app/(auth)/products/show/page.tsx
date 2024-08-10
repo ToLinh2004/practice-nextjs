@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import FamousBrand from '@/app/_components/FamousBrand';
 import { getAllProduct } from '@/app/services/config';
 import { Product } from '@/app/types';
@@ -6,7 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-
+import { toast } from 'react-toastify';
+import TitilePage from '@/app/_components/Titile';
 export default function ProductPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get('query') || '';
@@ -50,59 +52,62 @@ export default function ProductPage() {
 
   return (
     <>
-      <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg">
-        <div className="my-10 flex items-center justify-between">
-          <div className="mt-10 text-2xl">
-            <button
-              className={`relative font-bold uppercase after:absolute after:bottom-[-4px] after:block after:h-[2px] after:w-[150%] ${activeCategory === 'fashion' ? 'after:bg-blue-600' : ''} after:content-[''] hover:text-blue-600`}
-              onClick={() => fetchProducts('fashion')}
-            >
-              <span>Fashion shoes</span>
-            </button>
-          </div>
-          <div className="mt-10 text-2xl">
-            <button
-              className={`relative font-bold uppercase after:absolute after:bottom-[-4px] after:right-[0%] after:block after:h-[2px] after:w-[150%] ${activeCategory === 'sport' ? 'after:bg-blue-600' : ''} after:content-[''] hover:text-blue-600`}
-              onClick={() => fetchProducts('sport')}
-            >
-              Sport shoes
-            </button>
-          </div>
-        </div>
-        {loading ? (
-          <div className="flex h-64 items-center justify-center">
-            <span className="text-xl">Loading...</span>
-          </div>
-        ) : (
-          <div className="relative">
-            <div className="grid grid-cols-4 gap-4 sm:grid-cols-1 sm:gap-0">
-              {filteredProducts.map((product, index) => (
-                <div key={index} id="cart" className="group relative h-72 w-full rounded-lg bg-gray-300 shadow-lg">
-                  <Image src={product.img} alt={product.name} fill style={{ objectFit: 'cover' }} />
-                  <span className="absolute left-4 bg-opacity-50 px-2 text-center">{product.name}</span>
-                  <div className="absolute ml-6 mt-4 text-center">
-                    {product.discount ? <span className="mr-2">${calculateDiscountedPrice(product.price)}</span> : ''}
-                    <span className="text-red-600 line-through">${product.price}</span>
-                  </div>
-                  {product.discount ? (
-                    <div className="absolute right-0 top-0 animate-pulse bg-red-600 font-bold text-white shadow-lg">
-                      <span className="text-md block px-1">-10%</span>
-                    </div>
-                  ) : null}
-                  <Link
-                    href={`/products/${product.id}`}
-                    id="add-to-cart"
-                    className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 transform rounded-sm px-2 py-1 transition-transform duration-500 group-hover:translate-y-2"
-                  >
-                    <Image src="/cart.png" width={50} height={50} alt="Cart" />
-                  </Link>
-                </div>
-              ))}
+      <TitilePage name="Product " />
+      <Suspense>
+        <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg sm:mx-0">
+          <div className="my-10 flex items-center justify-between">
+            <div className="mt-10 text-2xl sm:text-sm">
+              <button
+                className={`relative font-bold uppercase after:absolute after:bottom-[-4px] after:block after:h-[2px] after:w-[150%] ${activeCategory === 'fashion' ? 'after:bg-blue-600' : ''} after:content-[''] hover:text-blue-600`}
+                onClick={() => fetchProducts('fashion')}
+              >
+                <span>Fashion shoes</span>
+              </button>
+            </div>
+            <div className="mt-10 text-2xl sm:text-sm">
+              <button
+                className={`relative font-bold uppercase after:absolute after:bottom-[-4px] after:right-[0%] after:block after:h-[2px] after:w-[150%] ${activeCategory === 'sport' ? 'after:bg-blue-600' : ''} after:content-[''] hover:text-blue-600`}
+                onClick={() => fetchProducts('sport')}
+              >
+                Sport shoes
+              </button>
             </div>
           </div>
-        )}
-        <FamousBrand />
-      </div>
+          {loading ? (
+            <div className="flex h-64 items-center justify-center">
+              <span className="text-xl">Loading...</span>
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="grid grid-cols-4 gap-4 sm:grid-cols-2 sm:gap-0">
+                {filteredProducts.map((product, index) => (
+                  <div key={index} id="cart" className="group relative h-72 w-full rounded-lg bg-gray-300 shadow-lg sm:h-52">
+                    <Image src={product.img} alt={product.name} fill style={{ objectFit: 'cover' }} />
+                    <span className="absolute left-4 bg-opacity-50 px-2 text-center">{product.name}</span>
+                    <div className="absolute ml-6 mt-4 text-center">
+                      {product.discount ? <span className="mr-2">${calculateDiscountedPrice(product.price)}</span> : ''}
+                      <span className="text-red-600 line-through">${product.price}</span>
+                    </div>
+                    {product.discount ? (
+                      <div className="absolute right-0 top-0 animate-pulse bg-red-600 font-bold text-white shadow-lg">
+                        <span className="text-md block px-1">-10%</span>
+                      </div>
+                    ) : null}
+                    <Link
+                      href={`/products/${product.id}`}
+                      id="add-to-cart"
+                      className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 transform rounded-sm px-2 py-1 transition-transform duration-500 group-hover:translate-y-2"
+                    >
+                      <Image src="/cart.png" width={50} height={50} alt="Cart" />
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <FamousBrand />
+        </div>
+      </Suspense>
     </>
   );
 }

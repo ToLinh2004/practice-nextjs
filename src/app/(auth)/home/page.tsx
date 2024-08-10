@@ -5,13 +5,36 @@ import ProductPropose from '@/app/_components/ProductPropose';
 import FamousBrand from '@/app/_components/FamousBrand';
 import { useState, useEffect } from 'react';
 import { useSaleOff } from '@/app/context/SaleOffContext';
-import { Product } from '@/app/types';
-import { getAllProduct } from '@/app/services/config';
-import Head from 'next/head';
+import TitilePage from '@/app/_components/Titile';
+import { useCart } from '@/app/context/CartContext';
+import { getCart } from '@/app/services/config';
+import { CartItem } from '@/app/types';
+import { useLoginContext } from '@/app/context/UserContext';
 const Home = () => {
-  const [timeLeft, setTimeLeft] = useState(86400000); // 24 hours in milliseconds
-  const { saleOffProducts, popularProducts } = useSaleOff();
+  const {user, loggedIn } = useLoginContext();
 
+  const [timeLeft, setTimeLeft] = useState(86400000);
+  const { saleOffProducts, popularProducts } = useSaleOff();
+ const { setCartCount } = useCart();
+
+ useEffect(() => {
+   const getAllCart = async () => {
+     try {
+       const data = await getCart();
+       const cartUserItems = data.filter((cart: CartItem) => cart.userId === user.id);
+       if (cartUserItems) {
+         setCartCount(cartUserItems.length);
+       } else {
+         console.error('Fetch cart failed');
+       }
+     } catch (error) {
+       console.error('Fetching cart failed:', error);
+     }
+   };
+   if (loggedIn) {
+     getAllCart();
+   }
+ }, [loggedIn]);
   useEffect(() => {
     const endTime = new Date().getTime() + timeLeft;
 
@@ -33,50 +56,44 @@ const Home = () => {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / 1000 / 60) % 60);
     const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
 
-    return { days, hours, minutes, seconds };
+    return { hours, minutes, seconds };
   };
 
-  const { days, hours, minutes, seconds } = formatTime(timeLeft);
+  const { hours, minutes, seconds } = formatTime(timeLeft);
 
   return (
     <>
-      <Head>
-        <title>Home - V-SPLUSH</title>
-      </Head>
-      <div className="mt-24 h-96">
+      <TitilePage name="Home " />
+      <div className="mt-24 h-96 sm:h-40">
         <Banner />
       </div>
-      <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg">
+      <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg sm:mx-0 sm:p-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="mr-6 bg-blue-600 px-3 py-1">
+          <div className="flex items-center space-x-2 sm:text-sm">
+            <div className="mr-6 bg-blue-600 px-3 py-1 sm:mr-2 sm:px-2">
               <span className="animate-pulse font-bold text-white">SALE OFF</span>
             </div>
-            <div className="bg-blue-600 px-3 py-1">
+            <div className="bg-blue-600 px-3 py-1 sm:px-2">
               <span className="font-bold text-white">{hours}h</span>
             </div>
             <div className="text-xl font-bold text-blue-600">:</div>
-            <div className="bg-blue-600 px-3 py-1">
+            <div className="bg-blue-600 px-3 py-1 sm:px-2">
               <span className="font-bold text-white">{minutes}m</span>
             </div>
             <div className="text-xl font-bold text-blue-600">:</div>
-            <div className="bg-blue-600 px-3 py-1">
+            <div className="bg-blue-600 px-3 py-1 sm:px-2">
               <span className="font-bold text-white">{seconds}s</span>
             </div>
           </div>
-          <div className="text-right">
-            <button className="font-bold text-blue-600 hover:underline">VIEW ALL</button>
-          </div>
         </div>
-        <ProductPropose titleLeft="" titleRight="" items={saleOffProducts} href="/" />
-        <div className="my-20 grid w-full grid-cols-2 gap-2">
+        <ProductPropose titleLeft="" items={saleOffProducts} href="/" />
+        <div className="my-20 grid w-full grid-cols-2 gap-2 sm:my-10">
           <Carousel title="Fahsion Shoes" category="fashion" />
 
           <Carousel title="Sport Shoes" category="sport" />
         </div>
-        <ProductPropose titleLeft="Popular Products" titleRight="View All" items={popularProducts} href="/" />
+        <ProductPropose titleLeft="Popular Products" items={popularProducts} href="/" />
         <FamousBrand />
       </div>
     </>
@@ -84,3 +101,6 @@ const Home = () => {
 };
 
 export default Home;
+
+
+

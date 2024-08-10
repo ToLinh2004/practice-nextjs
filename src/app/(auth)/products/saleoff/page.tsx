@@ -1,6 +1,4 @@
 'use client';
-import { getAllProduct } from '@/app/services/config';
-import { Product } from '@/app/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +6,7 @@ import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import FamousBrand from '@/app/_components/FamousBrand';
 import { useSaleOff } from '@/app/context/SaleOffContext';
-
+import TitilePage from '@/app/_components/Titile';
 export default function ProductPage() {
   const { saleOffProducts } = useSaleOff();
   const [timeLeft, setTimeLeft] = useState(86400000); // 24 hour in milliseconds
@@ -35,29 +33,30 @@ export default function ProductPage() {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / 1000 / 60) % 60);
     const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
 
-    return { days, hours, minutes, seconds };
+    return { hours, minutes, seconds };
   };
 
-  const { days, hours, minutes, seconds } = formatTime(timeLeft);
+  const { hours, minutes, seconds } = formatTime(timeLeft);
 
   const calculateDiscountedPrice = (price: number): number => {
     return Math.round(price * 0.8);
   };
   return (
     <>
-      <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg">
+      {' '}
+      <TitilePage name="Sale Off Product " />
+      <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg sm:mx-0">
         <div className="my-10 flex items-center justify-between">
           <div className="mt-10 text-2xl">
             <button className="relative font-bold uppercase after:absolute after:bottom-[-4px] after:block after:h-[2px] after:w-[150%] after:bg-blue-600 after:content-[''] hover:text-blue-600">
-              <span className="animate-pulse">
+              <span className="animate-pulse sm:text-sm">
                 f<FontAwesomeIcon icon={faBolt} className="text-blue hover:bg-blue-600" />
                 ash sale
               </span>
             </button>
           </div>
-          <div className="mt-10 text-2xl">
+          <div className="mt-10 text-2xl sm:text-sm">
             <div className="flex items-center">
               <div className="bg-blue-600 px-1 py-1">
                 <span className="text-white">{hours}h</span>
@@ -74,9 +73,9 @@ export default function ProductPage() {
           </div>
         </div>
 
-        <div className="relative grid grid-cols-4 gap-4 sm:grid-cols-1 sm:gap-0">
+        <div className="relative grid grid-cols-4 gap-4 sm:grid-cols-2 sm:gap-0">
           {saleOffProducts?.map((product, index) => (
-            <div id="cart" className="group relative h-72 w-full bg-gray-300 shadow-lg" key={index}>
+            <div id="cart" className="group relative h-72 w-full bg-gray-300 shadow-lg sm:h-52" key={index}>
               <Image src={product.img} alt={product.name} fill style={{ objectFit: 'cover' }} className="" />
               <span className="absolute left-4 bg-opacity-50 px-2 text-center">{product.name}</span>
               <div className="absolute ml-6 mt-4 text-center">

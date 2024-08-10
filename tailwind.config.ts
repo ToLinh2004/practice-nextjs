@@ -31,7 +31,8 @@ const config: Config = {
       },
     },
     screens: {
-      sm: { min: '430px', max: '874px' },
+      // my: {min:'0px', max:'430px'},
+      sm: { min: '0px', max: '874px' },
       md: { min: '875px', max: '1023px' },
       // 'lg': {'min': '1024px', 'max': '1279px'},
       // // => @media (min-width: 1024px and max-width: 1279px) { ... }

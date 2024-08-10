@@ -5,10 +5,13 @@ import { User, LoginContextProps } from '@/app/types';
 const LoginContext = createContext<LoginContextProps | undefined>(undefined);
 
 const getUserFromLocalStorage = (): User => {
-  const storedUser = localStorage.getItem('account');
-  if (storedUser) {
-    return JSON.parse(storedUser);
-  }
+if (typeof window !== 'undefined') {
+ const storedUser = localStorage.getItem('account');
+ if (storedUser) {
+   return JSON.parse(storedUser);
+ }
+}
+  
   return {
     id: 0,
     fullName: '',

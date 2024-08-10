@@ -6,19 +6,18 @@ import emailjs from '@emailjs/browser';
 import { FormEvent, Errors } from '@/app/types';
 import { createContact } from '@/app/services/config';
 import { toast } from 'react-toastify';
-import { mutate } from 'swr';
 
 export default function ContactUs() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState('Not replied');
+  const status = 'Not replied';
   const [errors, setErrors] = useState<Errors>({});
 
   const sendEmail = async (e: FormEvent) => {
     e.preventDefault();
-    let errors: Errors = {};
+    const errors: Errors = {};
     if (!fullName) {
       errors.fullName = 'Full Name is required';
     }

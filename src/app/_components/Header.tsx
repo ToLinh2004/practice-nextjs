@@ -19,7 +19,7 @@ export default function Header() {
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
   const [showCreateModalLogin, setShowCreateModalLogin] = useState<boolean>(false);
-  const { isSidebarOpen, toggleSidebar } = useSidebarContext();
+  const { toggleSidebar } = useSidebarContext();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,13 +61,17 @@ export default function Header() {
 
   return (
     <>
-      <div className="h-26 fixed left-0 right-0 top-0 flex w-full flex-row bg-blue-600">
+      <div className={`h-26 top-0 flex w-full flex-row bg-blue-600 ${user.role === 'admin' ? 'fixed left-0 right-0' : 'sticky z-50'}`}>
         <div className="fixed left-0 right-0 top-0 flex h-16 w-full flex-row bg-blue-600">
           <div className="flex basis-3/12 items-center sm:basis-1/3">
             <div className="relative mt-2 hidden sm:ml-2 sm:block">
-              <button onClick={toggleSidebar} className="text-white hover:text-black focus:outline-none" type="button">
-                <Image src="/menu.png" alt="menu" width={28} height={28} style={{ objectFit: 'contain' }} />
-              </button>
+              {loggedIn && user.role === 'admin' ? (
+                <button onClick={toggleSidebar} className="text-white hover:text-black focus:outline-none" type="button">
+                  <Image src="/menu.png" alt="menu" width={28} height={28} style={{ objectFit: 'contain' }} />
+                </button>
+              ) : (
+                ''
+              )}
             </div>
 
             <div className="ml-6 h-12 w-12 rounded-full bg-white sm:hidden">
@@ -125,7 +129,7 @@ export default function Header() {
                 <>
                   <div className="relative">
                     <button
-                      className="text-2sm mr-3 mt-2 flex items-center text-white hover:text-black"
+                      className="text-2sm mr-3 mt-2 flex items-center text-white hover:text-black sm:mb-2"
                       data-dropdown-trigger="hover"
                       data-dropdown-toggle="dropdownDelay"
                       data-dropdown-delay="100"
@@ -175,7 +179,7 @@ export default function Header() {
             </div>
           </div>
           <div className={user.role !== 'admin' ? 'fixed left-0 right-0 top-16 flex h-10 w-full flex-row bg-blue-700' : 'hidden'}>
-            <div className="ml-20 flex items-center space-x-4">
+            <div className="ml-20 sm:ml-6 flex items-center space-x-4">
               <Link href="/home" className="text-white">
                 <p className="text-sm hover:text-black">Home</p>
               </Link>

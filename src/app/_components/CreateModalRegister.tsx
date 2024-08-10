@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Image from 'next/image';
-import { Errors, FormEvent, InputEvent, MouseEvent, User } from '@/app/types';
+import { Errors, InputEvent, MouseEvent, User } from '@/app/types';
 import { toast } from 'react-toastify';
 import { useLoginContext } from '@/app/context/UserContext';
 import { getAllUser } from '@/app/services/config';
@@ -19,17 +19,18 @@ export default function CreateModalRegister({ showModalCreate, setShowModalCreat
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [role, setRole] = useState<string>('user');
-  const [avatar, setAvatar] = useState<string>('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6oGwl4-Bbo1KGYjb1HxkrfHq7_Chxpyn0oA&s');
-  const [status, setStatus] = useState<string>('Active');
+  const role = 'user';
+  const avatar = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6oGwl4-Bbo1KGYjb1HxkrfHq7_Chxpyn0oA&s';
+  const status = 'Active';
+
   const [errors, setErrors] = useState<Errors>({});
   const [showPassword, setShowPassword] = useState<string>('password');
   const [confirmShowpassword, setShowConfirmPassword] = useState<string>('password');
-  const { loggedIn, setLoggedIn, setUser, user } = useLoginContext();
+  const { setLoggedIn, setUser } = useLoginContext();
 
   const handelCreateRegisterSubmit = async (e: MouseEvent) => {
     e.preventDefault();
-    let errors: Errors = {};
+    const errors: Errors = {};
     if (!fullName) {
       errors.fullName = 'Full Name is required';
     }

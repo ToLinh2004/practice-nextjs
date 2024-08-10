@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { useRouter } from 'next/navigation';
-import { Errors, InputEvent, MouseEvent } from '@/app/types';
+import { Errors, InputEvent, MouseEvent, User } from '@/app/types';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { useLoginContext } from '@/app/context/UserContext';
@@ -24,7 +24,7 @@ export default function CreateModalLogin({ showCreateModalLogin, setShowCreateMo
 
   const handleCreateLoginSubmit = async (e: MouseEvent) => {
     e.preventDefault();
-    let errors: Errors = {};
+    const errors: Errors = {};
     if (!email) {
       errors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -43,7 +43,7 @@ export default function CreateModalLogin({ showCreateModalLogin, setShowCreateMo
     }
     try {
       const data = await getAllUser();
-      const user = data.find((user: any) => user.email === email && user.password === password && user.status === 'Active');
+      const user = data.find((user: User) => user.email === email && user.password === password && user.status === 'Active');
       if (user) {
         const { password, ...userWithoutPassword } = user;
         toast.success('Login successfully');

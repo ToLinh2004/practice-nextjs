@@ -48,7 +48,7 @@ const Carousel = ({ title, category }: ProductCarousel) => {
 
   return (
     <div id="default-carousel" className="relative w-full">
-      <div className="relative h-96 overflow-hidden">
+      <div className="relative h-96 sm:h-40 overflow-hidden">
         {products.map((src, index) => (
           <div
             key={index}
@@ -71,7 +71,7 @@ const Carousel = ({ title, category }: ProductCarousel) => {
           <button
             key={index}
             type="button"
-            className={`h-3 w-3 rounded-full ${index === currentIndex ? 'bg-blue-500' : 'bg-gray-300'}`}
+            className={`h-3 w-3 sm:h-1 sm:w-1 rounded-full ${index === currentIndex ? 'bg-blue-500' : 'bg-gray-300'}`}
             aria-current={index === currentIndex}
             aria-label={`Slide ${index + 1}`}
             onClick={() => setCurrentIndex(index)}

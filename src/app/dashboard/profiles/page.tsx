@@ -23,7 +23,7 @@ export default function AdminProfile() {
 
   const handleUpdateSubmit = async (e: MouseEvent) => {
     e.preventDefault();
-    let errors: Errors = {};
+    const errors: Errors = {};
 
     if (!fullName) {
       errors.fullName = 'Full Name is required';

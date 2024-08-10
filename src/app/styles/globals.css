@@ -30,6 +30,13 @@
   input {
     @apply dark:bg-white;
   }
+  html, body {
+  scrollbar-width: none; 
+}
+
+::-webkit-scrollbar {
+  width: 0; 
+}
 }
 
 @layer utilities {

@@ -178,7 +178,7 @@ const createContact = async (fullName: string, phone: string, email: string, mes
   return await response.json();
 };
 
-const updateUser = async (id: number, dataUser: Object) => {
+const updateUser = async (id: number, dataUser: object) => {
   const response = await fetch(`${productURL}/users/${id}`, {
     method: 'PUT',
     headers: {

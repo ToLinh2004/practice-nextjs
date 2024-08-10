@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import DTable from '@/app/_components/DTable';
 import MyPaginationComponent from '@/app/_components/Pagination';
 import useSWR from 'swr';
@@ -53,14 +54,16 @@ export default function ShowProduct({
 
   return (
     <>
-      {loggedIn && user.role === 'admin' ? (
-        <>
-          <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
-          <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
-        </>
-      ) : (
-        <NotFound />
-      )}
+      <Suspense fallback={<div>Loading...</div>}>
+        {loggedIn && user.role === 'admin' ? (
+          <>
+            <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
+            <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
+          </>
+        ) : (
+          <NotFound />
+        )}
+      </Suspense>
     </>
   );
 }

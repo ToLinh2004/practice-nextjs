@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { mutate } from 'swr';
-import { Errors, InputEvent, Size } from '@/app/types';
+import { Errors, Size } from '@/app/types';
 import { toast } from 'react-toastify';
 import { createProduct } from '@/app/services/config';
 import Image from 'next/image';
@@ -22,7 +22,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
   const [price, setPrice] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
   const [categoryName, setCategoryName] = useState<string>('');
-  const [status, setStatus] = useState<string>('active');
+  const status = 'active';
   const [sizes, setSizes] = useState<Size[]>([]);
   const [discount, setDiscount] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -67,7 +67,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
 
   const handleCreateSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    let errorMessages: Errors = {};
+    const errorMessages: Errors = {};
 
     if (!name) errorMessages.name = 'Product name is required';
     if (!description) errorMessages.description = 'Description is required';

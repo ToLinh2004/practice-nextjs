@@ -57,7 +57,7 @@ export default function DTable({ products, query, link }: ProductProps) {
                         <th
                           key={header}
                           scope="col"
-                          className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600 sm:px-6"
+                          className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600 "
                         >
                           {header}
                         </th>
@@ -67,15 +67,15 @@ export default function DTable({ products, query, link }: ProductProps) {
                   <tbody>
                     {products?.map((item) => (
                       <tr key={item.id} className="border transition duration-300 ease-in-out hover:bg-gray-100">
-                        <td className="whitespace-nowrap px-2 py-4 text-sm font-medium text-gray-900 sm:px-6">{item.id}</td>
-                        <td className="whitespace-nowrap py-4 sm:px-6">
-                          <Image src={item.img} alt="Image" height={100} width={100} />
+                        <td className="whitespace-nowrap px-2 py-4 text-sm font-medium text-gray-900 ">{item.id}</td>
+                        <td className="whitespace-nowrap py-4 ">
+                          <Image src={item.img} alt="Image" height={100} width={100} className=''/>
                         </td>
-                        <td className="whitespace-nowrap py-4 text-sm text-gray-900 sm:px-6">{item.name}</td>
-                        <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-sm text-gray-900 sm:px-6">{item.description}</td>
-                        <td className="whitespace-nowrap px-2 py-4 text-sm text-gray-900 sm:px-6">{item.price}</td>
-                        <td className="whitespace-nowrap px-2 py-4 text-sm text-gray-900 sm:px-6">{item.categoryName}</td>
-                        <td className="px-2py-4 whitespace-nowrap text-sm font-medium md:px-2">
+                        <td className="whitespace-nowrap py-4 text-sm text-gray-900 ">{item.name}</td>
+                        <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-sm text-gray-900 ">{item.description}</td>
+                        <td className="whitespace-nowrap px-2 py-4 text-sm text-gray-900 ">{item.price}</td>
+                        <td className="whitespace-nowrap px-2 py-4 text-sm text-gray-900 ">{item.categoryName}</td>
+                        <td className="px-2py-4 whitespace-nowrap text-sm font-medium ">
                           <button
                             className="mr-2 rounded text-white transition-transform duration-200 hover:scale-105"
                             onClick={() => (setShowModalUpdate(true), setProduct(item))}

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import CreateModalLogin from '@/app/_components/CreateModalLogin';
-
+import TitilePage from '@/app/_components/Titile';
 export default function DetailProductPage({ params }: { params: { id: number } }) {
   const { user } = useLoginContext();
   const [carts, setCarts] = useState<CartItem[]>([]);
@@ -112,7 +112,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
     if (selectedSize) {
       try {
         const existingItem = carts.find((item: CartItem) => item.productId === product.id && item.size === selectedSize.size);
-        if (existingItem) {
+        if (existingItem ) {
           const updatedItem: CartItem = {
             ...existingItem,
             quantity: existingItem.quantity + quantity,
@@ -121,7 +121,9 @@ export default function DetailProductPage({ params }: { params: { id: number } }
           toast.success('Added to cart successfully');
         } else {
           const newItem = await addToCart(user.id, product.id, quantity, selectedSize.size, product.price);
-          toast.success('Added to cart successfully');
+          if (newItem) {
+            toast.success('Added to cart successfully');
+          }
         }
       } catch (error) {
         console.error('Add to cart failed:', error);
@@ -134,6 +136,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
 
   return (
     <>
+      <TitilePage name="Product detail " />
       <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg">
         <div className="mb-10 mt-20 grid grid-cols-2 gap-4 sm:grid-cols-1 sm:gap-0">
           {product.discount ? (
@@ -211,7 +214,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
           </div>
         </div>
         {(product.categoryName === 'fashion' || product.categoryName === 'sport') && (
-          <ProductPropose titleLeft="Related Products" titleRight="View all" items={relatedProducts} href="/" />
+          <ProductPropose titleLeft="Related Products" items={relatedProducts} href="/" />
         )}
         <FamousBrand />
         <CreateModalLogin showCreateModalLogin={showCreateModalLogin} setShowCreateModalLogin={setShowCreateModalLogin} />
