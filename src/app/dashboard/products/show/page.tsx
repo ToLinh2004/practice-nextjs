@@ -8,6 +8,7 @@ import { Product } from '@/app/types';
 import LoadingPage from '@/app/_components/Loading';
 import { useLoginContext } from '@/app/context/UserContext';
 import NotFound from '@/app/not-found';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 export default function ShowProduct({
   searchParams,
@@ -17,6 +18,7 @@ export default function ShowProduct({
   };
 }) {
   const { loggedIn, user } = useLoginContext();
+  const { language } = useLanguage();
 
   const query = searchParams?.query || '';
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -54,7 +56,7 @@ export default function ShowProduct({
 
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>{language === 'en' ? 'Loading...' :'Đang tải ...'}</div>}>
         {loggedIn && user.role === 'admin' ? (
           <>
             <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />

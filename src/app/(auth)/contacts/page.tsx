@@ -8,6 +8,8 @@ import { createContact } from '@/app/services/config';
 import { toast } from 'react-toastify';
 import { mutate } from 'swr';
 import TitilePage from '@/app/_components/Titile';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
+
 export default function ContactUs() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,6 +17,7 @@ export default function ContactUs() {
   const [message, setMessage] = useState('');
   const status = 'Not replied';
   const [errors, setErrors] = useState<Errors>({});
+const { language } = useLanguage();
 
   const sendEmail = async (e: FormEvent) => {
     e.preventDefault();
@@ -73,7 +76,7 @@ export default function ContactUs() {
       <TitilePage name="Contact Us " />
 
       <div className="bg-green-contact-us mt-16 flex h-40 w-full items-center justify-center sm:text-xl">
-        <p className="mt-5 text-4xl text-white sm:text-xl">WE ARE READY TO ASSIST YOU 24/7</p>
+        <p className="mt-5 text-4xl text-white sm:text-xl">{language === 'en' ? 'WE ARE READY TO ASSIST YOU 24/7' :"Chúng tôi sẵn sàng hỗ trợ bạn 24/7"}</p>
       </div>
       <div className="mx-10 grid grid-cols-4 sm:mx-4 sm:grid-cols-1">
         <div></div>
@@ -83,7 +86,7 @@ export default function ContactUs() {
               <FontAwesomeIcon icon={faUser} className="mx-2 text-blue-600" />
               <input
                 type="text"
-                placeholder="Full Name"
+                placeholder={language === 'en' ? "Full Name":"Nhập Họ Và Tên"}
                 className="flex-grow bg-transparent outline-none"
                 onChange={(e) => setFullName(e.target.value)}
               />
@@ -99,13 +102,13 @@ export default function ContactUs() {
 
             <div className="mt-4 flex h-10 items-center rounded-md border-1  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <FontAwesomeIcon icon={faPhone} className="mx-2 text-blue-600" />
-              <input type="text" placeholder="Phone" className="flex-grow bg-transparent outline-none" onChange={(e) => setPhone(e.target.value)} />
+              <input type="text" placeholder={language === 'en' ? "Phone": "Số điện thoại"} className="flex-grow bg-transparent outline-none" onChange={(e) => setPhone(e.target.value)} />
             </div>
             {errors.phone && <p className="text-red-600 sm:text-sm">{errors.phone}</p>}
 
             <div className="mt-4 flex items-center rounded-md border-1  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <FontAwesomeIcon icon={faCommenting} className="mx-2 text-blue-600" />
-              <textarea placeholder="Message" className="mt-3 w-full bg-transparent outline-none" onChange={(e) => setMessage(e.target.value)} />
+              <textarea placeholder={language === 'en' ? "Message": 'Tin nhắn'} className="mt-3 w-full bg-transparent outline-none" onChange={(e) => setMessage(e.target.value)} />
             </div>
             {errors.message && <p className="text-red-600 sm:text-sm">{errors.message}</p>}
 
@@ -116,16 +119,16 @@ export default function ContactUs() {
         </div>
 
         <div className="mt-2 pl-8 pt-8 sm:pl-0 sm:pt-0">
-          <p className="sm:text-md mb-2 text-2xl font-bold">We are here to help you always...</p>
+          <p className="sm:text-md mb-2 text-2xl font-bold">{language === 'en' ? 'We are here to help you always...' : "Chúng tôi luôn sẵn sàng giúp bạn..."}</p>
           <p className="sm:font-sans sm:text-sm">
-            We'd love to hear your vision. Our Shop experts will reach out to you during business hours to discuss making it happen.
+           {language === 'en' ? "We'd love to hear your vision. Our Shop experts will reach out to you during business hours to discuss making it happen.":"Chúng tôi rất muốn nghe ý tưởng của bạn. Các chuyên gia của chúng tôi sẽ liên hệ với bạn trong giờ làm việc để thảo luận và thực hiện ý tưởng đó."}
           </p>
           <div className="mb-3 mt-2 flex items-start">
             <div className="flex h-10 w-10 items-center justify-center rounded-sm border-2 border-blue-600 hover:bg-white">
               <FontAwesomeIcon icon={faHome} className="text-blue-600" />
             </div>
             <div className="ml-2">
-              <p className="text-sm font-bold">Address:</p>
+              <p className="text-sm font-bold">{language === 'en' ?'Address:' : 'Địa chỉ:'}</p>
               <p className="text-sm">Lê Đình Chiểu - Sơn Trà - Đà Nẵng</p>
             </div>
           </div>
@@ -143,7 +146,7 @@ export default function ContactUs() {
               <FontAwesomeIcon icon={faPhone} className="text-blue-600" />
             </div>
             <div className="ml-2">
-              <p className="text-sm font-bold">Call Us:</p>
+              <p className="text-sm font-bold">{language === 'en' ? 'Call Us:' :'Gọi chúng tôi'}</p>
               <p className="text-sm">+84 94 - 6928 - 517</p>
             </div>
           </div>

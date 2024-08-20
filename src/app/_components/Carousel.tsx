@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Product } from '@/app/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 interface ProductCarousel {
   title: string;
@@ -13,6 +14,7 @@ const Carousel = ({ title, category }: ProductCarousel) => {
   const [products, setProducts] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+const { language } = useLanguage();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -60,7 +62,7 @@ const Carousel = ({ title, category }: ProductCarousel) => {
             <div className="absolute bottom-96 left-0">
               <span className="block rounded px-2 py-1 text-3xl font-bold text-black">{title}</span>
               <Link href="/products/show" className="mt-2 block px-2 py-1 text-2xl text-blue-600 underline">
-                SHOP NOW
+                {language === 'en' ?"SHOP NOW" :"Mua Ngay"}
               </Link>
             </div>
           </div>

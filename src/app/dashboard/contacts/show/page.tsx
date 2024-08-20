@@ -6,9 +6,12 @@ import { Contact } from '@/app/types';
 import MyPaginationComponent from '@/app/_components/Pagination';
 import UpdateContactModal from '@/app/_components/UpdateContactModal';
 import Image from 'next/image';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 export default function ShowContact() {
   const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
+    const { language } = useLanguage();
+
   const [contact, setContact] = useState<Contact>({
     id: 0,
     fullName: '',
@@ -61,29 +64,40 @@ export default function ShowContact() {
               <table className="w-full border-collapse items-center">
                 <thead className="">
                   <tr>
-                    {['ID', 'Full Name', 'Phone', 'Email', 'Message', 'Status', 'Action'].map((header) => (
-                      <th
-                        key={header}
-                        scope="col"
-                        className="cursor-pointer py-3 sm:pr-4 text-xs font-medium uppercase tracking-wider hover:text-blue-600 "
-                      >
-                        {header}
+                     <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'ID' : 'ID'}
                       </th>
-                    ))}
+                      <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'Full Name' : 'Họ Và Tên'}
+                      </th>
+                      <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'Phone' : 'Số Điện Thoại'}
+                      </th>
+                      <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'Email' : 'Email'}
+                      </th>
+                      <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'Message' : 'Tin Nhắn'}
+                      </th>
+                      <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'Status' : 'Trạng Thái'}
+                      </th>
+                      <th className="cursor-pointer px-2 py-3 text-left text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                        {language === 'en' ? 'Action' : 'Thao Tác'}
+                      </th>
+                   
                   </tr>
                 </thead>
                 <tbody>
                   {displayedContacts?.map((item) => (
                     <tr key={item.id} className="border-1 transition duration-300 ease-in-out hover:bg-gray-100">
-                      <td className="whitespace-nowrap py-4 pl-2 text-sm font-medium text-gray-900 ">{item.id}</td>
+                      <td className="whitespace-nowrap py-4 pl-4 text-sm font-medium text-gray-900">{item.id}</td>
 
-                      <td className="whitespace-nowrap py-4 sm:pr-4 text-sm text-gray-900 ">{item.fullName}</td>
-                      <td className="whitespace-nowrap py-4 sm:pr-4 text-sm text-gray-900 ">{item.phone}</td>
+                      <td className="whitespace-nowrap py-4 text-sm text-gray-900 sm:pr-4">{item.fullName}</td>
+                      <td className="whitespace-nowrap py-4 text-sm text-gray-900 sm:pr-4">{item.phone}</td>
 
-                      <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 sm:pr-4 text-sm text-gray-900 ">
-                        {item.email}
-                      </td>
-                      <td className="whitespace-nowrap py-4 sm:pr-4 text-sm text-gray-900 ">{item.message}</td>
+                      <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-sm text-gray-900 sm:pr-4">{item.email}</td>
+                      <td className="whitespace-nowrap py-4 text-sm text-gray-900 sm:pr-4">{item.message}</td>
 
                       <td className="whitespace-nowrap py-4 sm:pr-4">
                         <button className="ms-2 rounded py-1">

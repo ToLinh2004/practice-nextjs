@@ -1,7 +1,8 @@
 import { Product, Contact, Size, CartItem } from '@/app/types';
+import { StringifyOptions } from 'querystring';
 const productURL = `https://6520d291906e276284c4b0d2.mockapi.io/api/1`;
 const contactURL = `https://65200b03906e276284c3f31a.mockapi.io`;
-
+const orderURL = `https://66beb4f642533c403143d546.mockapi.io/api`;
 const getProductById = async (id: number) => {
   const response = await fetch(`${productURL}/products/${id}`);
   if (!response.ok) {
@@ -9,7 +10,13 @@ const getProductById = async (id: number) => {
   }
   return await response.json();
 };
-
+const getOrderById = async (id: number) => {
+  const response = await fetch(`${orderURL}/order/${id}`);
+  if (!response.ok) {
+    throw new Error('failed to fetch orders');
+  }
+  return await response.json();
+};
 const deleteProduct = async (id: number) => {
   const response = await fetch(`${productURL}/products/${id}`, {
     method: 'DELETE',
@@ -55,7 +62,14 @@ const getCart = async () => {
 
   return await response.json();
 };
+const getAllOrder = async () => {
+  const response = await fetch(`${orderURL}/order`);
+  if (!response.ok) {
+    throw new Error('failed to fetch order');
+  }
 
+  return await response.json();
+};
 const addToCart = async (userId: number, productId: number, quantity: number, size: string, price: number) => {
   const response = await fetch(`${contactURL}/carts/`, {
     method: 'POST',
@@ -122,6 +136,22 @@ const updateProduct = async (id: number, dataUpload: Product) => {
   });
   if (!response.ok) {
     throw new Error('failed to fetch products');
+  }
+
+  return await response.json();
+};
+
+
+const updateOrder = async (id: number, newStatus: string) => {
+  const response = await fetch(`${orderURL}/order/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status: newStatus }),
+  });
+  if (!response.ok) {
+    throw new Error('failed to fetch order');
   }
 
   return await response.json();
@@ -216,4 +246,7 @@ export {
   getCart,
   deleteCartById,
   updateCartItem,
+  getAllOrder,
+  getOrderById,
+  updateOrder,
 };

@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 const Banner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const images: string[] = ['/bannerFirst.png', '/bannerThird.jpg', '/bannerFour.jpg', '/bannerFive.jpg', '/bannerSix.jpg', '/bannerSeven.jpg'];
+const { language } = useLanguage();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,15 +31,15 @@ const Banner = () => {
           </div>
         ))}
       </div>
-      <span className="text-banner absolute left-72 top-10 ml-16 text-6xl text-white sm:left-0 sm:text-2xl">Step Into Comfort and Style</span>
+      <span className="text-banner absolute left-72 top-10 ml-16 text-6xl text-white sm:left-0 sm:text-2xl">{language === 'en' ?"Step Into Comfort and Style" :"Bước Vào Sự Thoải Mái và Phong Cách"}</span>
       <span className="absolute left-1/3 top-32 ml-10 text-2xl text-white sm:left-12 sm:top-20 sm:ml-12 sm:text-sm ">
-        Discover Our Latest Collection Now
+        {language === 'en' ? 'Discover Our Latest Collection Now' :'Khám Phá Bộ Sưu Tập Mới Nhất Của Chúng Tôi Ngay Bây Giờ'}
       </span>
       <Link
         href="/products/show"
         className="absolute left-1/3 top-1/2 ml-44 rounded-lg bg-blue-600 p-2 transition-transform duration-200 hover:scale-105 sm:left-0 sm:top-28 sm:ml-40 sm:scale-90  sm:text-sm"
       >
-        <span className="text-lg uppercase text-white sm:text-sm ">Shop Now</span>
+        <span className="text-lg uppercase text-white sm:text-sm ">{language === 'en' ? 'Shop Now' :'Mua Ngay'}</span>
       </Link>
 
       <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 space-x-3 sm:bottom-0 rtl:space-x-reverse">

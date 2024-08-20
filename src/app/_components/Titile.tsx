@@ -1,18 +1,25 @@
 'use client';
 import Head from 'next/head';
-interface TitilePropse {
+import { useEffect, useState } from 'react';
+
+interface TitleProps {
   name: string;
 }
-import { useEffect } from 'react';
-const TitilePage = ({ name }: TitilePropse) => {
+
+const TitlePage = ({ name }: TitleProps) => {
+  const [pageTitle, setPageTitle] = useState(name);
+
   useEffect(() => {
+    setPageTitle(name);
     document.title = name;
-  }, []);
+  }, [name]);
+
   return (
     <Head>
-      <title>{document.title}</title>
+      <title>{pageTitle}</title>
       <meta name="description" content="example description" />
     </Head>
   );
 };
-export default TitilePage;
+
+export default TitlePage;

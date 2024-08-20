@@ -3,16 +3,18 @@
   import { faFacebookF, faTwitter, faLinkedinIn, faInstagram } from '@fortawesome/free-brands-svg-icons';
   import { faPhone, faMapMarker, faEnvelope } from '@fortawesome/free-solid-svg-icons';
   import { useLoginContext } from '@/app/context/UserContext';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
   import Link from 'next/link';
 
   export default function Footer() {
     const { user } = useLoginContext();
+const { language } = useLanguage();
 
     return (
       <>
         {user.role === 'admin' ? (
-          ''
+          null
         ) : (
           <div className="bg-green-contact-us relative mt-10 p-4 shadow-lg">
             <footer className="mx-12 flex items-center justify-between sm:mx-6">
@@ -40,36 +42,36 @@
             <hr className="mx-12 my-2 border-2 border-gray-50 shadow-md sm:mx-6" />
             <div className="mx-12 grid grid-cols-4 gap-4 sm:mx-6 sm:grid-cols-1">
               <div>
-                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">Explore</span>
+                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">{language === 'en' ? 'Explore' : 'Khám phá'}</span>
 
                 <Link href="/" className="text-white">
-                  <span className="text-md mb-2 block font-light hover:text-blue-600">Home</span>
+                  <span className="text-md mb-2 block font-light hover:text-blue-600">{language === 'en' ? 'Home' : 'Trang chủ'}</span>
                 </Link>
                 <Link href="/" className="text-white">
-                  <span className="text-md mb-2 block font-light hover:text-blue-600">Products</span>
+                  <span className="text-md mb-2 block font-light hover:text-blue-600">{language === 'en' ? 'Products':'Sản phẩm'}</span>
                 </Link>
                 {/* <Link href="/" className="text-white">
               <span className="text-md mb-2 block font-light hover:text-blue-600">About Us</span>
             </Link> */}
                 <Link href="/" className="text-white">
-                  <span className="text-md mb-2 block font-light hover:text-blue-600">Contacts</span>
+                  <span className="text-md mb-2 block font-light hover:text-blue-600">{language === 'en' ? 'Contacts': 'Liên hệ'}</span>
                 </Link>
                 <Link href="/" className="text-white">
-                  <span className="text-md mb-2 block font-light hover:text-blue-600">Blogs</span>
+                  <span className="text-md mb-2 block font-light hover:text-blue-600">{language === 'en' ? 'Blogs' : 'Bài viết'}</span>
                 </Link>
               </div>
 
               <div>
-                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">Welcome to big store</span>
+                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">{language === 'en' ? 'Welcome to big store' :"Chào mừng đến với cửa hàng lớn"}</span>
 
-                <span className="text-md mb-2 block font-light text-white">The ultimate spot for fashion and comfort.</span>
-                <span className="text-md mb-2 block font-light text-white">Enjoy great prices and excellent service.</span>
-                <span className="text-md mb-2 block font-light text-white">Visit us in-store or shop online today!</span>
-                <span className="text-md mb-2 block font-light text-white">Big Store - Where style meets comfort!</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ? 'The ultimate spot for fashion and comfort.' : "Điểm đến tuyệt vời cho thời trang và sự thoải mái."}</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ? 'Enjoy great prices and excellent service.':"Tận hưởng giá cả tuyệt vời và dịch vụ xuất sắc."}</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ? 'Visit us in-store or shop online today!' : "Ghé thăm cửa hàng hoặc mua sắm online ngay!"}</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ?'Big Store - Where style meets comfort!':"Cửa Hàng Lớn - Nơi phong cách gặp gỡ sự thoải mái!"}</span>
               </div>
 
               <div>
-                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">Contact Us</span>
+                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">{language === 'en' ?'Contact Us':'Liên hệ chúng tôi'}</span>
                 <span className="text-md mb-2 block font-light text-white">
                   {' '}
                   <FontAwesomeIcon icon={faMapMarker} className="text-white" />
@@ -88,10 +90,10 @@
               </div>
 
               <div>
-                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">Working Hours</span>
-                <span className="text-md mb-2 block font-light text-white">Mon to Fri: 8:AM - 5:PM</span>
-                <span className="text-md mb-2 block font-light text-white">Sat: 7:AM - 22:PM</span>
-                <span className="text-md mb-2 block font-light text-white">Sun: 9:AM - 22:PM</span>
+                <span className="text-md mb-2 block font-medium uppercase text-white sm:text-sm">{language === 'en' ? 'Working Hours' :'Giờ làm việc'}</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ? 'Mon to Fri: 8:AM - 5:PM' :'Thứ hai - Thứ sáu : 8:00-17:00'}</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ? 'Sat: 7:AM - 22:PM' :'Thứ bảy: 7:00 - 22:00'}</span>
+                <span className="text-md mb-2 block font-light text-white">{language === 'en' ? 'Sun: 9:AM - 22:PM' : 'Chủ nhật 9:00 - 22:00'}</span>
               </div>
             </div>
 

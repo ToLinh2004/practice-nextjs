@@ -10,12 +10,17 @@ import { useCart } from '@/app/context/CartContext';
 import { getCart } from '@/app/services/config';
 import { CartItem } from '@/app/types';
 import { useLoginContext } from '@/app/context/UserContext';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
+
 const Home = () => {
   const {user, loggedIn } = useLoginContext();
-
   const [timeLeft, setTimeLeft] = useState(86400000);
   const { saleOffProducts, popularProducts } = useSaleOff();
  const { setCartCount } = useCart();
+const { language } = useLanguage();
+const fashion = language === 'en' ? 'Fahsion Shoes' : 'Giày Thời Trang';
+const sport = language === 'en' ? 'Sport Shoes' : 'Giày Thể Thao';
+const popular_product = language === 'en' ? 'Popular Products' : 'Sản phẩm nổi bật';
 
  useEffect(() => {
    const getAllCart = async () => {
@@ -61,6 +66,7 @@ const Home = () => {
   };
 
   const { hours, minutes, seconds } = formatTime(timeLeft);
+    
 
   return (
     <>
@@ -68,11 +74,11 @@ const Home = () => {
       <div className="mt-24 h-96 sm:h-40">
         <Banner />
       </div>
-      <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg sm:mx-0 sm:p-2">
+      <div className="mx-20 my-10 rounded-lg bg-gray-100  p-4 shadow-lg sm:mx-0 sm:p-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 sm:text-sm">
             <div className="mr-6 bg-blue-600 px-3 py-1 sm:mr-2 sm:px-2">
-              <span className="animate-pulse font-bold text-white">SALE OFF</span>
+              <span className="animate-pulse font-bold text-white">{language === 'en' ? 'SALE OFF' :'Giảm Giá'}</span>
             </div>
             <div className="bg-blue-600 px-3 py-1 sm:px-2">
               <span className="font-bold text-white">{hours}h</span>
@@ -89,11 +95,11 @@ const Home = () => {
         </div>
         <ProductPropose titleLeft="" items={saleOffProducts} href="/" />
         <div className="my-20 grid w-full grid-cols-2 gap-2 sm:my-10">
-          <Carousel title="Fahsion Shoes" category="fashion" />
+          <Carousel title={fashion} category="fashion" />
 
-          <Carousel title="Sport Shoes" category="sport" />
+          <Carousel title={sport} category="sport" />
         </div>
-        <ProductPropose titleLeft="Popular Products" items={popularProducts} href="/" />
+        <ProductPropose titleLeft={popular_product} items={popularProducts} href="/" />
         <FamousBrand />
       </div>
     </>

@@ -8,6 +8,7 @@ import { Errors, InputEvent, MouseEvent, User } from '@/app/types';
 import { toast } from 'react-toastify';
 import { useLoginContext } from '@/app/context/UserContext';
 import { getAllUser } from '@/app/services/config';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 interface IProps {
   showModalCreate: boolean;
@@ -27,6 +28,7 @@ export default function CreateModalRegister({ showModalCreate, setShowModalCreat
   const [showPassword, setShowPassword] = useState<string>('password');
   const [confirmShowpassword, setShowConfirmPassword] = useState<string>('password');
   const { setLoggedIn, setUser } = useLoginContext();
+const { language } = useLanguage();
 
   const handelCreateRegisterSubmit = async (e: MouseEvent) => {
     e.preventDefault();
@@ -104,26 +106,26 @@ export default function CreateModalRegister({ showModalCreate, setShowModalCreat
     <>
       <Modal show={showModalCreate} onHide={() => setShowModalCreate(false)} backdrop="static" keyboard={false}>
         <Modal.Header>
-          <Modal.Title className="text-xl font-bold">Register</Modal.Title>
+          <Modal.Title className="text-xl font-bold">{language === 'en' ? 'Register' : 'Đăng ký'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="" controlId="exampleForm.ControlInput1">
-              <Form.Label className="text-sm font-bold">Full Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter Full Name" onChange={(e: InputEvent) => setFullName(e.target.value)} />
+              <Form.Label className="text-sm font-bold">{language === 'en' ? 'Full Name' : 'Họ và tên'}</Form.Label>
+              <Form.Control type="text" placeholder={language === 'en' ? "Enter Full Name": "Nhập Họ Và Tên"} onChange={(e: InputEvent) => setFullName(e.target.value)} />
             </Form.Group>
             {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
             <Form.Group className="mt-2" controlId="exampleForm.ControlInput1">
               <Form.Label className="text-sm font-bold">Email</Form.Label>
-              <Form.Control type="email" placeholder="Enter Email" onChange={(e: InputEvent) => setEmail(e.target.value)} />
+              <Form.Control type="email" placeholder={language ==='em' ? "Enter Email": "Nhập email"} onChange={(e: InputEvent) => setEmail(e.target.value)} />
             </Form.Group>
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
             <div className="w-full">
               <Form.Group className="mt-2" controlId="exampleForm.ControlInput1">
-                <Form.Label className="text-sm font-bold">Password</Form.Label>
+                <Form.Label className="text-sm font-bold">{language === 'en' ? 'Password' : 'Mật khẩu'}</Form.Label>
 
                 <div className="relative">
-                  <Form.Control type={showPassword} placeholder="Enter Password" onChange={(e: InputEvent) => setPassword(e.target.value)} />
+                  <Form.Control type={showPassword} placeholder={language === 'en' ? "Enter Password": "Nhập mật khẩu"} onChange={(e: InputEvent) => setPassword(e.target.value)} />
                   <button
                     type="button"
                     className="absolute end-0 top-0 mr-2 mt-2 rounded-e-md"
@@ -142,12 +144,12 @@ export default function CreateModalRegister({ showModalCreate, setShowModalCreat
             {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
             <div className="w-full">
               <Form.Group className="mt-2" controlId="exampleForm.ControlInput1">
-                <Form.Label className="text-sm font-bold">Confirm Password</Form.Label>
+                <Form.Label className="text-sm font-bold">{language === 'en' ? 'Confirm Password' : 'Xác nhận mật khẩu'}</Form.Label>
 
                 <div className="relative">
                   <Form.Control
                     type={confirmShowpassword}
-                    placeholder="Enter password"
+                    placeholder={language === 'en' ? "Enter password" :'Xác nhận mật khẩu'}
                     onChange={(e: InputEvent) => setConfirmPassword(e.target.value)}
                   />
                   <button
@@ -170,10 +172,10 @@ export default function CreateModalRegister({ showModalCreate, setShowModalCreat
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={hanldeCancel}>
-            Cancel
+            {language === 'en' ? 'Cancel' : 'Hủy'}
           </Button>
           <Button variant="primary" onClick={handelCreateRegisterSubmit}>
-            Register
+            {language === 'en' ? 'Register' : 'Đăng ký'}
           </Button>
         </Modal.Footer>
       </Modal>

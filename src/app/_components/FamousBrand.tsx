@@ -1,10 +1,14 @@
 import Image from 'next/image';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
+
 export default function FamousBrand() {
+  const { language } = useLanguage();
+
   const images: string[] = ['/brandFirst.png', '/brandSecond.jpg', '/brandThird.png', '/brandFour.jpg', '/brandFive.png', '/brandSeven.jpg'];
   return (
     <>
       <div className="my-10 text-2xl sm:text-sm sm:my-5">
-        <span className="font-bold uppercase hover:text-blue-600">Famous brands</span>
+        <span className="font-bold uppercase hover:text-blue-600">{language === 'en' ? 'Famous brands' : 'Thương hiệu nổi tiếng'}</span>
       </div>
 
       <div className="grid grid-cols-6 gap-2 sm:grid-cols-4 sm:gap-2">

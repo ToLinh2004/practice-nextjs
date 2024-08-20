@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     });
 
     const paymentUrl = vnpay.buildPaymentUrl({
-      vnp_Amount: amount*100,
+      vnp_Amount: amount*1000,
       vnp_IpAddr: ipAddr,
       vnp_TxnRef: txnRef,
       vnp_OrderInfo: orderInfo,
@@ -27,7 +27,6 @@ export async function POST(req: Request) {
       vnp_ReturnUrl: returnUrl,
       vnp_Locale: VnpLocale.VN, 
     });
-
     return NextResponse.json({ paymentUrl }, { status: 200 });
   } catch (error) {
     console.error('Error processing request:', error);

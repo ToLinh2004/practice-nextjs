@@ -9,7 +9,7 @@ interface CartContextProps {
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState<number>(0);
 
   return <CartContext.Provider value={{ cartCount, setCartCount }}>{children}</CartContext.Provider>;
 };

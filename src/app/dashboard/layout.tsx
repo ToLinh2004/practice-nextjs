@@ -38,33 +38,31 @@ export default function RootLayout({
       <body className={`${inter.className}`}>
         <ThemeProvider attribute="class">
           <LoginProvider>
-           
-              <SidebarProvider>
-                <div className="flex">
-                  <Header />
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={1000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                    className="mr-14"
-                    transition={Zoom}
-                  />
+            <SidebarProvider>
+              <div className="flex">
+                <Header />
+                <ToastContainer
+                  position="top-right"
+                  autoClose={1000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                  className="mr-14"
+                  transition={Zoom}
+                />
 
-                  <div className="w-1/6 sm:w-0">
-                    <SideBar />
-                  </div>
-
-                  <div className="h-full w-4/5 sm:w-full">{children}</div>
+                <div className="w-1/6 sm:w-0">
+                  <SideBar />
                 </div>
-              </SidebarProvider>
-            
+
+                <div className="h-full w-4/5 sm:w-full">{children}</div>
+              </div>
+            </SidebarProvider>
           </LoginProvider>
         </ThemeProvider>
       </body>

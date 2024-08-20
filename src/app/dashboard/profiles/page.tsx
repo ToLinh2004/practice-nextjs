@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import Compressor from 'compressorjs';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
+
 
 export default function AdminProfile() {
   const { user, setUser, loggedIn } = useLoginContext();
@@ -20,6 +22,7 @@ export default function AdminProfile() {
   const role = user.role;
   const status = user.status;
   const [file, setImageFile] = useState<File | undefined>(undefined);
+  const { language } = useLanguage();
 
   const handleUpdateSubmit = async (e: MouseEvent) => {
     e.preventDefault();
@@ -100,9 +103,13 @@ export default function AdminProfile() {
     <>
       {loggedIn ? (
         <>
-          <p className="ml-10 mt-20 text-2xl text-blue-600 dark:text-white">Personal information</p>
-          <div className="ml-10 mt-4 rounded-lg border-2 border-gray-200 bg-white p-6 shadow-md">
-            <b className="mb-6 block text-2xl text-blue-600">About me</b>
+          {user.role === 'admin' ? (
+            <p className="ml-10 mt-20 text-2xl text-blue-600 dark:text-white">{language === 'en' ? 'Personal information' : 'Thông tin cơ bản'}</p>
+          ) : (
+            <p className="mt-20"></p>
+          )}
+          <div className={`mt-4 rounded-lg border-2 border-gray-200 bg-white p-6 shadow-md ${user.role === 'admin' ? 'ml-10' : 'mr-40'}`}>
+            <b className="mb-6 block text-2xl text-blue-600">{language === 'en' ? 'About me' : 'Về tôi'}</b>
             <div className="flex">
               <div className="flex w-1/3 flex-col items-center">
                 <Image src={avatar} width={200} height={200} alt="Avatar" className="mb-2 h-36 w-36 rounded-full object-cover" />
@@ -120,17 +127,20 @@ export default function AdminProfile() {
                       data-original="#000000"
                     />
                   </svg>
-                  Upload file
+                  {language === 'en' ? 'Upload file' : 'Tải ảnh lên'}
                   <input type="file" id="uploadFile1" className="hidden" onChange={handleImageUpload} />
                   {errors.file && <p className="mt-2 text-red-600">{errors.file}</p>}
-                  <p className="mt-2 text-xs font-medium text-gray-400">PNG, JPG, SVG, WEBP, and GIF are allowed.</p>
+                  <p className="mt-2 text-xs font-medium text-gray-400">
+                    {' '}
+                    {language === 'en' ? 'PNG, JPG, SVG, WEBP, and GIF are allowed.' : 'PNG, JPG, SVG, WEBP, và GIF được phép'}
+                  </p>
                 </label>
               </div>
               <div className="w-2/3 pl-8">
                 <form className="w-full">
                   <div className="mb-4">
                     <div className="flex w-full items-center">
-                      <label className="w-1/3 text-xl">Full Name:</label>
+                      <label className="w-1/3 text-xl">{language === 'en' ? 'Full Name:' : 'Họ Và Tên'}</label>
                       <input
                         type="text"
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:outline-none"
@@ -156,7 +166,7 @@ export default function AdminProfile() {
 
                   <div className="mb-4">
                     <div className="flex w-full items-center">
-                      <label className="w-1/3 text-xl">Phone:</label>
+                      <label className="w-1/3 text-xl">{language === 'en' ? 'Phone:' :'Điện thoại:'}</label>
                       <input
                         type="text"
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:outline-none"
@@ -169,7 +179,7 @@ export default function AdminProfile() {
 
                   <div className="mb-4">
                     <div className="flex w-full items-center">
-                      <label className="w-1/3 text-xl">Address:</label>
+                      <label className="w-1/3 text-xl">{language === 'en' ? 'Address:' : 'Địa chỉ:'}</label>
                       <input
                         type="text"
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:outline-none"
@@ -182,7 +192,7 @@ export default function AdminProfile() {
 
                   <div className="mb-4">
                     <div className="flex w-full items-center">
-                      <label className="w-1/3 text-xl">Status:</label>
+                      <label className="w-1/3 text-xl">{language === 'en' ? 'Status:' :'Trạng Thái:'}</label>
                       <input
                         type="text"
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:outline-none"
@@ -194,11 +204,15 @@ export default function AdminProfile() {
 
                   <div className="mb-4 flex w-full items-center">
                     <label className="w-3/12 text-xl"></label>
-                    <button type="submit" className="mr-4 w-20 rounded bg-blue-600 px-2 text-xl text-white" onClick={handleUpdateSubmit}>
-                      Save
+                    <button
+                      type="submit"
+                      className="mr-4 w-20 rounded bg-blue-600 px-2 text-xl text-white hover:bg-blue-700"
+                      onClick={handleUpdateSubmit}
+                    >
+                     {language === 'en' ?'Save' :'Lưu'}
                     </button>
-                    <button type="button" className="w-20 rounded bg-gray-300 px-2 text-xl text-white">
-                      <Link href="/dashboard">Back</Link>
+                    <button type="button" className="w-20 rounded bg-gray-300 px-2 text-xl text-white hover:bg-black">
+                      <Link href="/dashboard">{language === 'en' ? 'Back' :'Trở lại'}</Link>
                     </button>
                   </div>
                 </form>
@@ -206,9 +220,7 @@ export default function AdminProfile() {
             </div>
           </div>
         </>
-      ) : (
-        ''
-      )}
+      ) : null}
     </>
   );
 }

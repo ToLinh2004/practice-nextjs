@@ -10,6 +10,7 @@ import useSWR from 'swr';
 import { mutate } from 'swr';
 import NotSearch from '@/app/_components/NotSearch';
 import { useLoginContext } from '@/app/context/UserContext';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 export default function ShowUser({
   searchParams,
@@ -19,6 +20,7 @@ export default function ShowUser({
   };
 }) {
   const { loggedIn, user } = useLoginContext();
+  const { language } = useLanguage();
 
   const query = searchParams?.query || '';
   const [users, setUsers] = useState<User[]>([]);
@@ -109,32 +111,51 @@ export default function ShowUser({
                       <table className="w-full border-collapse items-center">
                         <thead className="">
                           <tr>
-                            {['ID', 'Image', 'Full Name', 'Email', 'Date', 'Phone', 'Address', 'Role', 'Status'].map((header) => (
-                              <th
-                                key={header}
-                                scope="col"
-                                className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600 "
-                              >
-                                {header}
-                              </th>
-                            ))}
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'ID' : 'ID'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Image' : 'Ảnh'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Full Name' : 'Họ Và Tên'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Email' : 'Email'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Date' : 'Ngày'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Phone' : 'Điện Thoại'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Address' : 'Địa Chỉ'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Role' : 'Vai Trò'}
+                            </th>
+                            <th className="cursor-pointer px-2 py-3 text-center text-xs font-medium uppercase tracking-wider hover:text-blue-600">
+                              {language === 'en' ? 'Status' : 'Trạng Thái'}
+                            </th>
+                            
                           </tr>
                         </thead>
                         <tbody>
                           {displayedUsers?.map((item) => (
                             <tr key={item.id} className="border-1 transition duration-300 ease-in-out hover:bg-gray-100">
-                              <td className="whitespace-nowrap py-4 pl-2 text-sm font-medium text-gray-900 ">{item.id}</td>
-                              <td className="whitespace-nowrap py-4 pl-2 ">
+                              <td className="whitespace-nowrap py-4 pl-2 text-sm font-medium text-gray-900">{item.id}</td>
+                              <td className="whitespace-nowrap py-4 pl-2">
                                 <Image src={item.avatar} alt="" height={100} width={100} className="" />
                               </td>
-                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 ">{item.fullName}</td>
-                              <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-center text-sm text-gray-900 ">
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900">{item.fullName}</td>
+                              <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-center text-sm text-gray-900">
                                 {item.email}
                               </td>
-                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 ">{item.date}</td>
-                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 ">{item.phone}</td>
-                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 ">{item.address}</td>
-                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900 ">{item.role}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900">{item.date}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900">{item.phone}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900">{item.address}</td>
+                              <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900">{item.role}</td>
 
                               <td className="whitespace-nowrap py-4 text-center">
                                 <button

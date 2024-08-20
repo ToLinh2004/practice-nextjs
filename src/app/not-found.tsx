@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 function NotFound() {
   return (
     <section className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">

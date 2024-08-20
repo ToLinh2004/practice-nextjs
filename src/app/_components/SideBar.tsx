@@ -4,23 +4,36 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarContext } from '@/app/context/SidebarContext';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 export default function SideBar() {
   const { user, loggedIn } = useLoginContext();
   const { isSidebarOpen, toggleSidebar } = useSidebarContext();
-  const sideBarLink = [
-    {
-      name: 'Product',
-      href: '/dashboard/products/show',
-      linkIcon: '/window.png',
-    },
-    {
-      name: 'User',
-      href: '/dashboard/users',
-      linkIcon: '/userProfile.png',
-    },
-    { name: 'Contact', href: '/dashboard/contacts/show', linkIcon: '/phone.png' },
-  ];
+  const { language } = useLanguage();
+
+const sideBarLink = [
+  {
+    name: language === 'en' ? 'Product' : 'Sản phẩm',
+    href: '/dashboard/products/show',
+    linkIcon: '/window.png',
+  },
+  {
+    name: language === 'en' ? 'User' : 'Người dùng',
+    href: '/dashboard/users',
+    linkIcon: '/userProfile.png',
+  },
+  {
+    name: language === 'en' ? 'Contact' : 'Liên hệ',
+    href: '/dashboard/contacts/show',
+    linkIcon: '/phone.png',
+  },
+  {
+    name: language === 'en' ? 'Order' : 'Đơn hàng',
+    href: '/dashboard/orders/show',
+    linkIcon: '/order.png',
+  },
+];
+
 
   const pathname = usePathname();
   const handleLinkClick = () => {
@@ -54,9 +67,7 @@ export default function SideBar() {
             );
           })}
         </div>
-      ) : (
-        ''
-      )}
+      ) : null}
     </>
   );
 }
