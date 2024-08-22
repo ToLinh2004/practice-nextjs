@@ -15,14 +15,14 @@ interface IProps {
   product: Product;
 }
 export default function DeleteProductModal({ showModalDelete, setShowModalDelete, product }: IProps) {
-const { language } = useLanguage();
+  const { language } = useLanguage();
 
   const handleDelete = async () => {
     try {
       const res = await deleteProduct(product.id);
       if (res) {
-        toast.success('Deleted product successfully');
         setShowModalDelete(false);
+        toast.success('Deleted product successfully');
         mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
       }
     } catch (error) {

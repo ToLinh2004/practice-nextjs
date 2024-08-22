@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { mutate } from 'swr';
 import TitilePage from '@/app/_components/Titile';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
+import Footer from '@/app/_components/Footer';
 
 export default function ContactUs() {
   const [fullName, setFullName] = useState('');
@@ -40,7 +41,7 @@ const { language } = useLanguage();
     }
     setErrors(errors);
     if (Object.keys(errors).length > 0) {
-      return;
+      return; 
     }
     const templateParam = {
       full_name: fullName,
@@ -73,20 +74,22 @@ const { language } = useLanguage();
   };
   return (
     <>
-      <TitilePage name="Contact Us " />
+      <TitilePage name={language === 'en' ? 'Contact Us' : 'Liên Hệ'} />
 
       <div className="bg-green-contact-us mt-16 flex h-40 w-full items-center justify-center sm:text-xl">
-        <p className="mt-5 text-4xl text-white sm:text-xl">{language === 'en' ? 'WE ARE READY TO ASSIST YOU 24/7' :"Chúng tôi sẵn sàng hỗ trợ bạn 24/7"}</p>
+        <p className="mt-5 text-4xl text-white sm:text-xl">
+          {language === 'en' ? 'WE ARE READY TO ASSIST YOU 24/7' : 'Chúng tôi sẵn sàng hỗ trợ bạn 24/7'}
+        </p>
       </div>
       <div className="mx-10 grid grid-cols-4 sm:mx-4 sm:grid-cols-1">
         <div></div>
         <div className="mt-6">
           <form onSubmit={sendEmail}>
-            <div className="mt-4 flex h-10 items-center rounded-md border-1  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+            <div className="border-1 mt-4 flex h-10 items-center rounded-md border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <FontAwesomeIcon icon={faUser} className="mx-2 text-blue-600" />
               <input
                 type="text"
-                placeholder={language === 'en' ? "Full Name":"Nhập Họ Và Tên"}
+                placeholder={language === 'en' ? 'Full Name' : 'Nhập Họ Và Tên'}
                 className="flex-grow bg-transparent outline-none"
                 onChange={(e) => setFullName(e.target.value)}
               />
@@ -94,41 +97,54 @@ const { language } = useLanguage();
 
             {errors.fullName && <p className="text-red-600 sm:text-sm">{errors.fullName}</p>}
 
-            <div className="mt-4 flex h-10 items-center rounded-md border-1  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+            <div className="border-1 mt-4 flex h-10 items-center rounded-md border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <FontAwesomeIcon icon={faEnvelope} className="mx-2 text-blue-600" />
               <input type="email" placeholder="Email" className="flex-grow bg-transparent outline-none" onChange={(e) => setEmail(e.target.value)} />
             </div>
             {errors.email && <p className="text-red-600 sm:text-sm">{errors.email}</p>}
 
-            <div className="mt-4 flex h-10 items-center rounded-md border-1  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+            <div className="border-1 mt-4 flex h-10 items-center rounded-md border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <FontAwesomeIcon icon={faPhone} className="mx-2 text-blue-600" />
-              <input type="text" placeholder={language === 'en' ? "Phone": "Số điện thoại"} className="flex-grow bg-transparent outline-none" onChange={(e) => setPhone(e.target.value)} />
+              <input
+                type="text"
+                placeholder={language === 'en' ? 'Phone' : 'Số điện thoại'}
+                className="flex-grow bg-transparent outline-none"
+                onChange={(e) => setPhone(e.target.value)}
+              />
             </div>
             {errors.phone && <p className="text-red-600 sm:text-sm">{errors.phone}</p>}
 
-            <div className="mt-4 flex items-center rounded-md border-1  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+            <div className="border-1 mt-4 flex items-center rounded-md border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <FontAwesomeIcon icon={faCommenting} className="mx-2 text-blue-600" />
-              <textarea placeholder={language === 'en' ? "Message": 'Tin nhắn'} className="mt-3 w-full bg-transparent outline-none" onChange={(e) => setMessage(e.target.value)} />
+              <textarea
+                placeholder={language === 'en' ? 'Message' : 'Tin nhắn'}
+                className="mt-3 w-full bg-transparent outline-none"
+                onChange={(e) => setMessage(e.target.value)}
+              />
             </div>
             {errors.message && <p className="text-red-600 sm:text-sm">{errors.message}</p>}
 
             <button type="submit" className="mt-4 w-full rounded-md bg-blue-600 p-2 text-white transition-colors hover:bg-blue-700">
-              Submit
+              {language === 'en' ? 'Submit' : 'Nộp'}
             </button>
           </form>
         </div>
 
         <div className="mt-2 pl-8 pt-8 sm:pl-0 sm:pt-0">
-          <p className="sm:text-md mb-2 text-2xl font-bold">{language === 'en' ? 'We are here to help you always...' : "Chúng tôi luôn sẵn sàng giúp bạn..."}</p>
+          <p className="sm:text-md mb-2 text-2xl font-bold">
+            {language === 'en' ? 'We are here to help you always...' : 'Chúng tôi luôn sẵn sàng giúp bạn...'}
+          </p>
           <p className="sm:font-sans sm:text-sm">
-           {language === 'en' ? "We'd love to hear your vision. Our Shop experts will reach out to you during business hours to discuss making it happen.":"Chúng tôi rất muốn nghe ý tưởng của bạn. Các chuyên gia của chúng tôi sẽ liên hệ với bạn trong giờ làm việc để thảo luận và thực hiện ý tưởng đó."}
+            {language === 'en'
+              ? "We'd love to hear your vision. Our Shop experts will reach out to you during business hours to discuss making it happen."
+              : 'Chúng tôi rất muốn nghe ý tưởng của bạn. Các chuyên gia của chúng tôi sẽ liên hệ với bạn trong giờ làm việc để thảo luận và thực hiện ý tưởng đó.'}
           </p>
           <div className="mb-3 mt-2 flex items-start">
             <div className="flex h-10 w-10 items-center justify-center rounded-sm border-2 border-blue-600 hover:bg-white">
               <FontAwesomeIcon icon={faHome} className="text-blue-600" />
             </div>
             <div className="ml-2">
-              <p className="text-sm font-bold">{language === 'en' ?'Address:' : 'Địa chỉ:'}</p>
+              <p className="text-sm font-bold">{language === 'en' ? 'Address:' : 'Địa chỉ:'}</p>
               <p className="text-sm">Lê Đình Chiểu - Sơn Trà - Đà Nẵng</p>
             </div>
           </div>
@@ -146,13 +162,13 @@ const { language } = useLanguage();
               <FontAwesomeIcon icon={faPhone} className="text-blue-600" />
             </div>
             <div className="ml-2">
-              <p className="text-sm font-bold">{language === 'en' ? 'Call Us:' :'Gọi chúng tôi'}</p>
+              <p className="text-sm font-bold">{language === 'en' ? 'Call Us:' : 'Gọi chúng tôi'}</p>
               <p className="text-sm">+84 94 - 6928 - 517</p>
             </div>
           </div>
         </div>
-        <div></div>
       </div>
+      <Footer />
     </>
   );
 }

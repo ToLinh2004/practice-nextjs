@@ -11,6 +11,8 @@ import { getCart } from '@/app/services/config';
 import { CartItem } from '@/app/types';
 import { useLoginContext } from '@/app/context/UserContext';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
+import Footer from '@/app/_components/Footer';
+
 
 const Home = () => {
   const {user, loggedIn } = useLoginContext();
@@ -70,7 +72,7 @@ const popular_product = language === 'en' ? 'Popular Products' : 'Sản phẩm n
 
   return (
     <>
-      <TitilePage name="Home " />
+      <TitilePage name={language === 'en' ? "Home" :"Trang chủ"} />
       <div className="mt-24 h-96 sm:h-40">
         <Banner />
       </div>
@@ -102,6 +104,7 @@ const popular_product = language === 'en' ? 'Popular Products' : 'Sản phẩm n
         <ProductPropose titleLeft={popular_product} items={popularProducts} href="/" />
         <FamousBrand />
       </div>
+      <Footer />
     </>
   );
 };

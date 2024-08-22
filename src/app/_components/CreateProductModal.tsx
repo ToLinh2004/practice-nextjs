@@ -104,8 +104,16 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
     try {
       const res = await createProduct(name, img, price, description, sizes, status, categoryName, discount);
       if (res) {
-        toast.success('Product created successfully');
         setShowModalCreate(false);
+        toast.success('Product created successfully');
+        setErrors({});
+        setImage('');
+        setSizes([]);
+        setName('');
+        setPrice(0);
+        setDescription('');
+        setCategoryName('');
+        setDiscount(false);
         mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
       } else {
         toast.error('Failed to create product');
@@ -160,7 +168,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
                 <Form.Label className="text-md font-normal">{language === 'en' ? 'Product Name' : 'Tên sản phẩm'}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder={language === 'en' ? "Enter product name" :'Nhập tên sản phẩm'}
+                  placeholder={language === 'en' ? 'Enter product name' : 'Nhập tên sản phẩm'}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="mt-1 rounded-md border p-2"
@@ -172,7 +180,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
                 <Form.Label className="text-md font-normal">{language === 'en' ? 'Description' : 'Mô tả'}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder={language === 'en' ? "Enter description": 'Nhập mô tả'}
+                  placeholder={language === 'en' ? 'Enter description' : 'Nhập mô tả'}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="mt-1 rounded-md border p-2"
@@ -184,7 +192,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
                 <Form.Label className="text-md font-normal">{language === 'en' ? 'Price' : 'Giá'}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder={language === 'en' ? "Enter price": "Nhập giá"}
+                  placeholder={language === 'en' ? 'Enter price' : 'Nhập giá'}
                   value={price}
                   onChange={(e) => setPrice(Number(e.target.value))}
                   className="mt-1 rounded-md border p-2"
@@ -249,7 +257,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
               className="mb-2 h-8 w-24 rounded-md bg-blue-600 text-white transition duration-200 hover:bg-black"
               onClick={handleAddSize}
             >
-              {language === 'en' ? 'Add Size' : 'Thêm kích thước'}
+              {language === 'en' ? 'Add Size' : 'Kích thước'}
             </button>
             <div className="grid grid-cols-4 gap-6 sm:grid-cols-1 sm:gap-4">
               {sizes.map((size, index) => (
@@ -257,7 +265,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
                   <input
                     type="text"
                     value={size.size}
-                    placeholder={language === 'en'?"Size":"Nhập kích thước"}
+                    placeholder={language === 'en' ? 'Size' : 'Nhập'}
                     onChange={(e) => {
                       const newSizes = [...sizes];
                       newSizes[index] = { ...newSizes[index], size: e.target.value };
@@ -268,7 +276,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
                   <input
                     type="number"
                     value={size.quantity}
-                    placeholder={language === 'en'? "Quantity" :"Nhập số lượng"}
+                    placeholder={language === 'en' ? 'Quantity' : 'Nhập số lượng'}
                     onChange={(e) => handleSizeChange(e, index)}
                     className="w-16 rounded-sm border p-1"
                   />

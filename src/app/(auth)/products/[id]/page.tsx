@@ -14,6 +14,7 @@ import CreateModalLogin from '@/app/_components/CreateModalLogin';
 import TitilePage from '@/app/_components/Titile';
 import { useCart } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
+import Footer from '@/app/_components/Footer';
 
 export default function DetailProductPage({ params }: { params: { id: number } }) {
   const { user } = useLoginContext();
@@ -145,7 +146,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
 
   return (
     <>
-      <TitilePage name="Product detail " />
+      <TitilePage name={language === 'en'? "Product detail":"Sản phẩm chi tiết"} />
       <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg">
         <div className="mb-10 mt-20 grid grid-cols-2 gap-4 sm:grid-cols-1 sm:gap-0">
           {product.discount ? (
@@ -251,6 +252,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
         <FamousBrand />
         <CreateModalLogin showCreateModalLogin={showCreateModalLogin} setShowCreateModalLogin={setShowCreateModalLogin} />
       </div>
+      <Footer />
     </>
   );
 }

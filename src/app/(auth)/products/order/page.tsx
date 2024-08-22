@@ -3,14 +3,14 @@ import { Suspense, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { deleteCartById, getAllOrder, getAllProduct, getCart } from '@/app/services/config';
+import { useSearchParams } from 'next/navigation';
+import { deleteCartById, getAllOrder, getAllProduct } from '@/app/services/config';
 import Link from 'next/link';
-import { CartItem, Order, OrderItem, Product } from '@/app/types';
+import { Order, OrderItem, Product } from '@/app/types';
 import TitilePage from '@/app/_components/Titile';
 import { useLoginContext } from '@/app/context/UserContext';
 import LoadingPage from '@/app/_components/Loading';
-
+import Footer from '@/app/_components/Footer';
 export default function OrderHistoryPage() {
   const { language } = useLanguage();
   const searchParams = useSearchParams();
@@ -206,6 +206,7 @@ export default function OrderHistoryPage() {
           </div>
         )}
       </Suspense>
+      <Footer />
     </>
   );
 }

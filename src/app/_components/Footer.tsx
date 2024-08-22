@@ -8,13 +8,12 @@ import { useLanguage } from '@/app/context/ChangeLanguageContext';
   import Link from 'next/link';
 
   export default function Footer() {
-    const { user } = useLoginContext();
+    const { user,loggedIn } = useLoginContext();
 const { language } = useLanguage();
-
     return (
       <>
-        {user.role === 'admin' ? (
-          null
+        { user.role === 'admin' ? (
+          ''
         ) : (
           <div className="bg-green-contact-us relative mt-10 p-4 shadow-lg">
             <footer className="mx-12 flex items-center justify-between sm:mx-6">

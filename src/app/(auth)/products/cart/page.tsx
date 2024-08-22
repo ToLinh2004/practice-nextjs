@@ -13,7 +13,7 @@ import { useCart } from '@/app/context/CartContext';
 import TitilePage from '@/app/_components/Titile';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 import LoadingPage from '@/app/_components/Loading';
-
+import Footer from '@/app/_components/Footer';
 export default function CartPage() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [carts, setCarts] = useState<CartItem[]>([]);
@@ -28,6 +28,7 @@ export default function CartPage() {
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState<boolean>(true);
+
 
   useEffect(() => {
     const getAllCart = async () => {
@@ -206,7 +207,7 @@ export default function CartPage() {
   if (loading) return <LoadingPage />;
   return (
     <>
-      <TitilePage name="Show Cart " />
+      <TitilePage name={language === 'en' ? 'Show Cart' : 'Giỏ Hàng'} />
       <Suspense fallback={<LoadingPage />}>
         {carts.length === 0 ? (
           <div className="mx-20 mt-72 rounded-lg bg-gray-100 p-4 shadow-lg">
@@ -351,6 +352,7 @@ export default function CartPage() {
           </div>
         )}
       </Suspense>
+      <Footer />
     </>
   );
 }

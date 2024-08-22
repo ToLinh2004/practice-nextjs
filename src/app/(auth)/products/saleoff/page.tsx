@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import FamousBrand from '@/app/_components/FamousBrand';
 import { useSaleOff } from '@/app/context/SaleOffContext';
 import TitilePage from '@/app/_components/Titile';
+import Footer from '@/app/_components/Footer';
+
 export default function ProductPage() {
   const { saleOffProducts } = useSaleOff();
   const [timeLeft, setTimeLeft] = useState(86400000); // 24 hour in milliseconds
@@ -98,6 +100,7 @@ export default function ProductPage() {
 
         <FamousBrand />
       </div>
+      <Footer />
     </>
   );
 }

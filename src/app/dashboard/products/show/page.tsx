@@ -9,6 +9,7 @@ import LoadingPage from '@/app/_components/Loading';
 import { useLoginContext } from '@/app/context/UserContext';
 import NotFound from '@/app/not-found';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
+import RootLayout from '@/app/layout';
 
 export default function ShowProduct({
   searchParams,
@@ -56,16 +57,17 @@ export default function ShowProduct({
 
   return (
     <>
-      <Suspense fallback={<div>{language === 'en' ? 'Loading...' :'Đang tải ...'}</div>}>
-        {loggedIn && user.role === 'admin' ? (
-          <>
-            <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
-            <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
-          </>
-        ) : (
-          <NotFound />
-        )}
-      </Suspense>
+        <Suspense fallback={<div>{language === 'en' ? 'Loading...' : 'Đang tải ...'}</div>}>
+          {loggedIn && user.role === 'admin' ? (
+            <>
+              <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
+              <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
+            </>
+          ) : (
+            <NotFound />
+          )}
+        </Suspense>
+
     </>
   );
 }

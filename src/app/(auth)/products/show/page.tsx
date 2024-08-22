@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import TitilePage from '@/app/_components/Titile';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
+import Footer from '@/app/_components/Footer';
 
 export default function ProductPage() {
   const searchParams = useSearchParams();
@@ -120,6 +121,7 @@ export default function ProductPage() {
           <FamousBrand />
         </div>
       </Suspense>
+      <Footer />
     </>
   );
 }

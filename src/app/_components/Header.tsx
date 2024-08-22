@@ -18,6 +18,7 @@ import { useLanguage } from '@/app/context/ChangeLanguageContext';
 export default function Header() {
   const { language, setLanguage } = useLanguage();
   const { loggedIn, setLoggedIn, user, setUser } = useLoginContext();
+  const { setCartCount } = useCart();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
@@ -73,6 +74,7 @@ export default function Header() {
       date: '',
       phone: '',
     });
+    setCartCount(0);
     router.push('/');
   };
 

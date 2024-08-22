@@ -29,7 +29,7 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
   const [discount, setDiscount] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
   const [file, setImageFile] = useState<File | undefined>(undefined);
-const { language } = useLanguage();
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (product && product.id) {
@@ -49,7 +49,6 @@ const { language } = useLanguage();
     const newSizes = [...sizes];
     const quantity = parseInt(e.target.value, 10);
 
-
     if (!isNaN(quantity) && quantity >= 0) {
       newSizes[index].quantity = quantity;
     } else {
@@ -58,7 +57,6 @@ const { language } = useLanguage();
 
     setSizes(newSizes);
   };
-
 
   const handleUpdateSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -105,8 +103,8 @@ const { language } = useLanguage();
     try {
       const res = await updateProduct(id, dataUpload);
       if (res) {
-        toast.success('Product updated successfully');
         setShowModalUpdate(false);
+        toast.success('Product updated successfully');
         mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
       } else {
         toast.error('Failed to update product');

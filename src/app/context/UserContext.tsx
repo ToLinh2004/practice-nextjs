@@ -5,11 +5,12 @@ import { User, LoginContextProps } from '@/app/types';
 const LoginContext = createContext<LoginContextProps | undefined>(undefined);
 
 const getUserFromLocalStorage = (): User => {
-if (typeof window !== undefined) {
+if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined') {
  const storedUser = localStorage.getItem('account');
  if (storedUser) {
    return JSON.parse(storedUser);
- }
+ }}
 }
   
   return {
@@ -28,9 +29,10 @@ if (typeof window !== undefined) {
 
 const isLoggedIn = (): boolean => {
   if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
     const storedUser = localStorage.getItem('account');
     return !!storedUser;
-  }
+  }}
    return false;
 };
 
