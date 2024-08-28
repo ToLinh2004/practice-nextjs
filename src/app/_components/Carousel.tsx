@@ -8,7 +8,9 @@ import { useLanguage } from '@/app/context/ChangeLanguageContext';
 interface ProductCarousel {
   title: string;
   category: string;
+  
 }
+
 const Carousel = ({ title, category }: ProductCarousel) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [products, setProducts] = useState<string[]>([]);
