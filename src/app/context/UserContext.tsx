@@ -1,14 +1,18 @@
 'use client';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React,{ createContext, useContext, useEffect, useState } from 'react';
 import { User, LoginContextProps } from '@/app/types';
 
 const LoginContext = createContext<LoginContextProps | undefined>(undefined);
 
 const getUserFromLocalStorage = (): User => {
-  const storedUser = localStorage.getItem('account');
-  if (storedUser) {
-    return JSON.parse(storedUser);
-  }
+if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined') {
+ const storedUser = localStorage.getItem('account');
+ if (storedUser) {
+   return JSON.parse(storedUser);
+ }}
+}
+  
   return {
     id: 0,
     fullName: '',
@@ -24,25 +28,17 @@ const getUserFromLocalStorage = (): User => {
 };
 
 const isLoggedIn = (): boolean => {
-  const storedUser = localStorage.getItem('account');
-  return !!storedUser;
+  if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
+    const storedUser = localStorage.getItem('account');
+    return !!storedUser;
+  }}
+   return false;
 };
 
 export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const [loggedIn, setLoggedIn] = useState<boolean>(isLoggedIn());
   const [user, setUser] = useState<User>(getUserFromLocalStorage);
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setLoggedIn(isLoggedIn());
-      setUser(getUserFromLocalStorage());
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
 
   return <LoginContext.Provider value={{ loggedIn, setLoggedIn, user, setUser }}>{children}</LoginContext.Provider>;
 };

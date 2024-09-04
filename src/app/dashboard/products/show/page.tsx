@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import DTable from '@/app/_components/DTable';
 import MyPaginationComponent from '@/app/_components/Pagination';
 import useSWR from 'swr';
@@ -7,6 +8,8 @@ import { Product } from '@/app/types';
 import LoadingPage from '@/app/_components/Loading';
 import { useLoginContext } from '@/app/context/UserContext';
 import NotFound from '@/app/not-found';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
+import RootLayout from '@/app/layout';
 
 export default function ShowProduct({
   searchParams,
@@ -16,6 +19,7 @@ export default function ShowProduct({
   };
 }) {
   const { loggedIn, user } = useLoginContext();
+  const { language } = useLanguage();
 
   const query = searchParams?.query || '';
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -53,14 +57,17 @@ export default function ShowProduct({
 
   return (
     <>
-      {loggedIn && user.role === 'admin' ? (
-        <>
-          <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
-          <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
-        </>
-      ) : (
-        <NotFound />
-      )}
+        <Suspense fallback={<div>{language === 'en' ? 'Loading...' : 'Đang tải ...'}</div>}>
+          {loggedIn && user.role === 'admin' ? (
+            <>
+              <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
+              <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
+            </>
+          ) : (
+            <NotFound />
+          )}
+        </Suspense>
+
     </>
   );
 }
