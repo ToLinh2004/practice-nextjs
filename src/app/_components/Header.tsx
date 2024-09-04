@@ -228,7 +228,7 @@ export default function Header() {
               </Link>
             </div>
           </div>
-          <Form.Group className="float-end ml-2 mr-4 mt-2 w-12" controlId="productCategory">
+          <Form.Group className="float-end ml-1 mr-4 mt-2 w-12" controlId="productCategory">
             <Form.Control as="select" value={language} onChange={(e) => setLanguage(e.target.value)} className="">
               <option value="en" className="text-black">
                 En
