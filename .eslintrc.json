@@ -1,5 +1,5 @@
 {
-  "extends": ["next", "next/core-web-vitals", "eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": ["next", "next/core-web-vitals","prettier","next/babel"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["prettier", "react", "@typescript-eslint"],
   "rules": {

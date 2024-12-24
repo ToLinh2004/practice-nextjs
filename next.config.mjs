@@ -28,6 +28,8 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: false,
+  devtool: 'source-map',
 };
 
 export default nextConfig;

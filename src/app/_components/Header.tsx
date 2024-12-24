@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,19 +12,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { MouseEvent } from '@/app/types';
 import { useCart } from '@/app/context/CartContext';
+import Form from 'react-bootstrap/Form';
+import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 export default function Header() {
+  const { language, setLanguage } = useLanguage();
   const { loggedIn, setLoggedIn, user, setUser } = useLoginContext();
+  const { setCartCount } = useCart();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const [showCreateModalLogin, setShowCreateModalLogin] = useState<boolean>(false);
-  const { isSidebarOpen, toggleSidebar } = useSidebarContext();
+  const { toggleSidebar } = useSidebarContext();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { cartCount } = useCart();
 
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    setLanguage(storedLanguage);
+    setLoading(false);
+  }, [setLanguage]);
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('language', language);
+    }
+  }, [language, loading]);
+
+  if (loading) return null;
   const handleSearch = (e: MouseEvent) => {
     e.preventDefault();
     router.push(`/products/show/?query=${searchQuery}`);
@@ -56,18 +74,21 @@ export default function Header() {
       date: '',
       phone: '',
     });
+    setCartCount(0);
     router.push('/');
   };
 
   return (
     <>
-      <div className="h-26 fixed left-0 right-0 top-0 flex w-full flex-row bg-blue-600">
+      <div className={`bg-blue-600 ${user.role === 'admin' ? 'h-26 fixed left-0 right-0 top-0 flex w-full flex-row' : 'sticky z-50'}`}>
         <div className="fixed left-0 right-0 top-0 flex h-16 w-full flex-row bg-blue-600">
           <div className="flex basis-3/12 items-center sm:basis-1/3">
             <div className="relative mt-2 hidden sm:ml-2 sm:block">
-              <button onClick={toggleSidebar} className="text-white hover:text-black focus:outline-none" type="button">
-                <Image src="/menu.png" alt="menu" width={28} height={28} style={{ objectFit: 'contain' }} />
-              </button>
+              {loggedIn && user.role === 'admin' ? (
+                <button onClick={toggleSidebar} className="text-white hover:text-black focus:outline-none" type="button">
+                  <Image src="/menu.png" alt="menu" width={28} height={28} style={{ objectFit: 'contain' }} />
+                </button>
+              ) : null}
             </div>
 
             <div className="ml-6 h-12 w-12 rounded-full bg-white sm:hidden">
@@ -75,11 +96,11 @@ export default function Header() {
             </div>
             {user.role === 'admin' ? (
               <Link href="/dashboard" className="sm:hidden">
-                <span className="text-md ml-2 mt-2 font-bold text-white hover:text-black">V-Splush</span>
+                <span className="text-md ml-2 mt-2 font-bold text-white hover:text-black">VS-SPLUSH</span>
               </Link>
             ) : (
               <Link href="/home" className="sm:hidden">
-                <span className="text-md ml-2 mt-2 font-bold text-white hover:text-black">V-Splush</span>
+                <span className="text-md ml-2 mt-2 font-bold text-white hover:text-black">VS-SPLUSH</span>
               </Link>
             )}
           </div>
@@ -87,19 +108,11 @@ export default function Header() {
             {user.role !== 'admin' ? (
               <div className="float-start mt-3 w-5/6">
                 <div className="flex flex-row">
-                  {/* <div className="basis-4">
-                    <select className="custom-select h-8 bg-gray-300 text-sm">
-                      <option className="bg-white text-sm">Categories</option>
-                      <option className="bg-white text-sm">Category 1</option>
-                      <option className="bg-white text-sm">Category 2</option>
-                      <option className="bg-white text-sm">Category 3</option>
-                    </select>
-                  </div> */}
                   <div className="basis-3/4">
                     <input
                       type="text"
                       className="h-8 w-full rounded-l-md p-2 text-sm focus:outline-none"
-                      placeholder="Search products..."
+                      placeholder={language === 'en' ? 'Search products...' : 'Tìm kiếm sản phẩm ...'}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -117,15 +130,13 @@ export default function Header() {
                   </Link>
                 </div>
               </div>
-            ) : (
-              ''
-            )}
+            ) : null}
             <div className="float-end">
               {loggedIn ? (
                 <>
                   <div className="relative">
                     <button
-                      className="text-2sm mr-3 mt-2 flex items-center text-white hover:text-black"
+                      className="text-2sm mr-3 mt-2 flex items-center text-white hover:text-black sm:mb-2"
                       data-dropdown-trigger="hover"
                       data-dropdown-toggle="dropdownDelay"
                       data-dropdown-delay="100"
@@ -146,17 +157,25 @@ export default function Header() {
                         onMouseEnter={handleDropdownOpen}
                         onMouseLeave={handleDropdownClose}
                       >
-                        <Link href="/dashboard/profiles" className="block w-full py-2 pl-4 text-left text-sm hover:bg-gray-200">
-                          View Profile
-                        </Link>
                         <button
                           onClick={() => (currentTheme == 'dark' ? setTheme('light') : setTheme('dark'))}
                           className="block w-full py-2 pl-4 text-left hover:bg-gray-200"
                         >
                           <Image src={currentTheme === 'dark' ? '/moon.png' : '/sunny.png'} width={22} height={22} alt="Theme icon" className="" />
                         </button>
+                        <Link href="/dashboard/profiles" className="block w-full py-2 pl-4 text-left text-sm hover:bg-gray-200">
+                          {language === 'en' ? 'View Profile' : 'Xem hồ sơ'}
+                        </Link>
+
+                        {user.role === 'user' ? (
+                          <Link href="/products/order" className="block w-full py-2 pl-4 text-left text-sm hover:bg-gray-200">
+                            {language === 'en' ? 'Ordered List' : 'Danh sách đơn hàng'}
+                          </Link>
+                        ) : (
+                          ''
+                        )}
                         <button className="block w-full py-2 pl-4 text-left text-sm hover:bg-gray-200" onClick={handleLogout}>
-                          Logout
+                          {language === 'en' ? 'Logout' : 'Đăng xuất'}
                         </button>
                       </div>
                     )}
@@ -165,19 +184,19 @@ export default function Header() {
               ) : (
                 <>
                   <button className="text-2sm mr-3 mt-3 text-white" onClick={() => setShowCreateModalLogin(true)}>
-                    <p className="hover:text-black">Login</p>
+                    <p className="hover:text-black">{language === 'en' ? 'Login' : 'Đăng nhập'}</p>
                   </button>
                   <button className="text-2sm mr-3 mt-3 text-white" onClick={() => setShowModalCreate(true)}>
-                    <p className="hover:text-black">Register</p>
+                    <p className="hover:text-black">{language === 'en' ? 'Register' : 'Đăng ký'}</p>
                   </button>
                 </>
               )}
             </div>
           </div>
           <div className={user.role !== 'admin' ? 'fixed left-0 right-0 top-16 flex h-10 w-full flex-row bg-blue-700' : 'hidden'}>
-            <div className="ml-20 flex items-center space-x-4">
+            <div className="ml-20 flex items-center space-x-4 sm:ml-6">
               <Link href="/home" className="text-white">
-                <p className="text-sm hover:text-black">Home</p>
+                <p className="text-sm hover:text-black">{language === 'en' ? 'Home' : 'Trang chủ'}</p>
               </Link>
               <div className="relative">
                 <button
@@ -187,7 +206,7 @@ export default function Header() {
                   data-dropdown-delay="100"
                   onMouseEnter={handleDropdownOpenCategory}
                 >
-                  <span className="hover:text-black">Product</span>
+                  <span className="hover:text-black">{language === 'en' ? 'Product' : 'Sản phẩm'}</span>
                 </button>
                 {isDropdownOpenCategory && (
                   <div
@@ -196,19 +215,29 @@ export default function Header() {
                     onMouseLeave={handleDropdownCloseCategory}
                   >
                     <Link href="/products/saleoff" className="block w-full py-1 pl-2 text-left text-sm hover:bg-gray-200">
-                      Sale Off
+                      {language === 'en' ? 'Sale Off' : ' Giảm giá'}
                     </Link>
                     <Link href="/products/show" className="block w-full py-1 pl-2 text-left text-sm hover:bg-gray-200">
-                      All Product
+                      {language === 'en' ? 'All Product' : 'Tất cả sản phẩm'}
                     </Link>
                   </div>
                 )}
               </div>
               <Link href="/contacts" className="text-white">
-                <p className="text-sm hover:text-black">Contact us</p>
+                <p className="text-sm hover:text-black">{language === 'en' ? 'Contact us' : 'Liên hệ'}</p>
               </Link>
             </div>
           </div>
+          <Form.Group className="float-end ml-1 mr-4 mt-2 w-12" controlId="productCategory">
+            <Form.Control as="select" value={language} onChange={(e) => setLanguage(e.target.value)} className="">
+              <option value="en" className="text-black">
+                En
+              </option>
+              <option value="vi" className="text-black">
+                Vi
+              </option>
+            </Form.Control>
+          </Form.Group>
         </div>
       </div>
 

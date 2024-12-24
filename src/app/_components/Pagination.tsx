@@ -20,7 +20,7 @@ export default function PaginationComponent({ totalPages, currentPage, onPageCha
 
   return (
     <nav
-      className="flex-column bottom-0 flex flex-wrap items-center justify-between sm:ml-3 md:sticky md:flex-row md:pt-2"
+      className="flex-column bottom-0 flex flex-wrap items-center justify-between sm:ml-3 "
       aria-label="Table navigation"
     >
       <ul className="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">{items?.map((page, index) => <li key={index}>{page}</li>)}</ul>

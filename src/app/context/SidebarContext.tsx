@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React,{ createContext, useContext, useState, ReactNode } from 'react';
 
 import { SidebarContextProps } from '@/app/types';
 
@@ -10,6 +10,7 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
+    console.log('isSidebarOpen after toggle:', !isSidebarOpen);
   };
 
   return <SidebarContext.Provider value={{ isSidebarOpen, toggleSidebar }}>{children}</SidebarContext.Provider>;
