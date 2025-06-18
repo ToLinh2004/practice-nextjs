@@ -45,11 +45,18 @@ const { language } = useLanguage();
         status: 'Replied',
       };
       console.log(changeStatus);
-      const res = await updateContact(contact.id, changeStatus);
+      const res = await fetch(`/api/contacts/${contact.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(changeStatus),
+      });
+
       if (res) {
         toast.success('Reply email successfully');
         setShowModalUpdate(false);
-        mutate('https://65200b03906e276284c3f31a.mockapi.io/contacts');
+        mutate('/api/contacts'); // Revalidate the contacts data
       } else {
         toast.error('Reply email failed');
       }

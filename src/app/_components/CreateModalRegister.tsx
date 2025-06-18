@@ -28,7 +28,7 @@ export default function CreateModalRegister({ showModalCreate, setShowModalCreat
   const [showPassword, setShowPassword] = useState<string>('password');
   const [confirmShowpassword, setShowConfirmPassword] = useState<string>('password');
   const { setLoggedIn, setUser } = useLoginContext();
-const { language } = useLanguage();
+  const { language } = useLanguage();
 
   const handelCreateRegisterSubmit = async (e: MouseEvent) => {
     e.preventDefault();
@@ -52,7 +52,8 @@ const { language } = useLanguage();
       errors.confirmPassword = 'Confirm password does not match password';
     }
     try {
-      const data = await getAllUser();
+      const res = await fetch('/api/users');
+      const data = await res.json();
       console.log(data);
       const user = data.find((user: User) => user.email === email);
       if (user) {
@@ -68,10 +69,9 @@ const { language } = useLanguage();
     }
 
     try {
-      const res = await fetch(`https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/`, {
+      const res = await fetch('/api/users', {
         method: 'POST',
         headers: {
-          accept: 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -112,12 +112,20 @@ const { language } = useLanguage();
           <Form>
             <Form.Group className="" controlId="exampleForm.ControlInput1">
               <Form.Label className="text-sm font-bold">{language === 'en' ? 'Full Name' : 'Họ và tên'}</Form.Label>
-              <Form.Control type="text" placeholder={language === 'en' ? "Enter Full Name": "Nhập Họ Và Tên"} onChange={(e: InputEvent) => setFullName(e.target.value)} />
+              <Form.Control
+                type="text"
+                placeholder={language === 'en' ? 'Enter Full Name' : 'Nhập Họ Và Tên'}
+                onChange={(e: InputEvent) => setFullName(e.target.value)}
+              />
             </Form.Group>
             {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
             <Form.Group className="mt-2" controlId="exampleForm.ControlInput1">
               <Form.Label className="text-sm font-bold">Email</Form.Label>
-              <Form.Control type="email" placeholder={language ==='em' ? "Enter Email": "Nhập email"} onChange={(e: InputEvent) => setEmail(e.target.value)} />
+              <Form.Control
+                type="email"
+                placeholder={language === 'em' ? 'Enter Email' : 'Nhập email'}
+                onChange={(e: InputEvent) => setEmail(e.target.value)}
+              />
             </Form.Group>
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
             <div className="w-full">
@@ -125,7 +133,11 @@ const { language } = useLanguage();
                 <Form.Label className="text-sm font-bold">{language === 'en' ? 'Password' : 'Mật khẩu'}</Form.Label>
 
                 <div className="relative">
-                  <Form.Control type={showPassword} placeholder={language === 'en' ? "Enter Password": "Nhập mật khẩu"} onChange={(e: InputEvent) => setPassword(e.target.value)} />
+                  <Form.Control
+                    type={showPassword}
+                    placeholder={language === 'en' ? 'Enter Password' : 'Nhập mật khẩu'}
+                    onChange={(e: InputEvent) => setPassword(e.target.value)}
+                  />
                   <button
                     type="button"
                     className="absolute end-0 top-0 mr-2 mt-2 rounded-e-md"
@@ -149,7 +161,7 @@ const { language } = useLanguage();
                 <div className="relative">
                   <Form.Control
                     type={confirmShowpassword}
-                    placeholder={language === 'en' ? "Enter password" :'Xác nhận mật khẩu'}
+                    placeholder={language === 'en' ? 'Enter password' : 'Xác nhận mật khẩu'}
                     onChange={(e: InputEvent) => setConfirmPassword(e.target.value)}
                   />
                   <button

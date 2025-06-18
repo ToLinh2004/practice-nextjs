@@ -66,7 +66,13 @@ export default function AdminProfile() {
     const dataUser: User = { id, fullName, email, address, phone, avatar, role, status };
 
     try {
-      const res = await updateUser(id, dataUser);
+      const res = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataUser),
+      });
       if (res) {
         toast.success('Updated the profile successfully');
         localStorage.setItem('account', JSON.stringify(dataUser));

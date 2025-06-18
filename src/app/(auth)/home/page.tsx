@@ -69,7 +69,6 @@ const popular_product = language === 'en' ? 'Popular Products' : 'Sản phẩm n
 
   const { hours, minutes, seconds } = formatTime(timeLeft);
     
-
   return (
     <>
       <TitilePage name={language === 'en' ? "Home" :"Trang chủ"} />

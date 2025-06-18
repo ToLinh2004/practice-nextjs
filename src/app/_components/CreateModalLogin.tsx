@@ -8,7 +8,6 @@ import { Errors, InputEvent, MouseEvent, User } from '@/app/types';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { useLoginContext } from '@/app/context/UserContext';
-import { getAllUser } from '@/app/services/config';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 interface IProps {
@@ -44,7 +43,8 @@ const { language } = useLanguage();
       return;
     }
     try {
-      const data = await getAllUser();
+      const res = await fetch('/api/users');
+      const data = await res.json();
       const user = data.find((user: User) => user.email === email && user.password === password && user.status === 'Active');
       if (user) {
         const { password, ...userWithoutPassword } = user;

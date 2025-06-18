@@ -27,7 +27,7 @@ export default function ShowUser({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, isLoading } = useSWR('https://6520d291906e276284c4b0d2.mockapi.io/api/1/users', fetcher, {
+  const { data, isLoading } = useSWR('/api/users', fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -36,15 +36,14 @@ export default function ShowUser({
   const updateStatus = async (id: number, status: string) => {
     try {
       const changedStatus = status === 'Active' ? 'Inactive' : 'Active';
-      const res = await fetch(`https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/${id}`, {
+      const res = await fetch(`/api/users/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          status: changedStatus,
-        }),
+        body: JSON.stringify(changedStatus),
       });
+
       if (res.ok) {
         setUsers((data) =>
           data.map((user) =>
@@ -56,7 +55,7 @@ export default function ShowUser({
               : user,
           ),
         );
-        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/users');
+        mutate('/api/users');
 
         toast.success('Updated status successfully');
       } else {

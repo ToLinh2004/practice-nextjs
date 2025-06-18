@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faHome, faEnvelope, faUser, faCommenting } from '@fortawesome/free-solid-svg-icons';
 import emailjs from '@emailjs/browser';
 import { FormEvent, Errors } from '@/app/types';
-import { createContact } from '@/app/services/config';
 import { toast } from 'react-toastify';
 import { mutate } from 'swr';
 import TitilePage from '@/app/_components/Titile';
@@ -60,7 +59,13 @@ const { language } = useLanguage();
 
       console.log('SUCCESS!', emailResponse.status, emailResponse.text);
 
-      const res = await createContact(fullName, phone, email, message, status);
+      const res =await fetch('/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fullName, phone, email, message, status }),
+      });
       if (res) {
         toast.success('Send feedback successfully');
         mutate('/api/contacts');

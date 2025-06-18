@@ -143,7 +143,7 @@ export default function Header() {
                       onMouseEnter={handleDropdownOpen}
                     >
                       <Image
-                        src={user.avatar}
+                        src={user.avatar || '/user.png'}
                         alt="user"
                         width={40}
                         height={40}

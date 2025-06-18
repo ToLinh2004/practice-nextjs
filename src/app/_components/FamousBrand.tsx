@@ -13,7 +13,7 @@ export default function FamousBrand() {
 
       <div className="grid grid-cols-6 gap-2 sm:grid-cols-4 sm:gap-2">
         {images.map((src, index) => (
-          <div className="relative h-40 sm:h-16 sm:w-20 transform border-r-2 bg-gray-300 transition duration-500 ease-in-out hover:scale-105" key={index}>
+          <div className="relative h-40 sm:h-16 sm:w-20 transform border-r-2 bg-gray-300 transition duration-500 ease-in-out hover:scale-105 cursor-pointer" key={index}>
             <Image src={src} alt={`image ${index + 1}`} layout="fill" objectFit="center" className="" />
           </div>
         ))}

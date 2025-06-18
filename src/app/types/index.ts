@@ -96,6 +96,13 @@ export interface OrderItem {
 
 export interface Order {
   userId: number;
+  productId:number;
+  productName:string;
+  producImage:string;
+  price: number;
+  quantity: number;
+  discount:boolean;
+  size: string;
   order: OrderItem[];
   total: number;
   createdAt: string;

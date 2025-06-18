@@ -46,7 +46,7 @@ function OrderHistory() {
       if (typeof window !== undefined) {
         const newOrderString = localStorage.getItem('newOrders') || '';
         const newOrder = JSON.parse(newOrderString);
-        await fetch('https://66beb4f642533c403143d546.mockapi.io/api/order', {
+        await fetch('/api/orders', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

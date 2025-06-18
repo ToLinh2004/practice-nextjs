@@ -21,7 +21,7 @@ const { language } = useLanguage();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
+        const response = await fetch('/api/products');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
