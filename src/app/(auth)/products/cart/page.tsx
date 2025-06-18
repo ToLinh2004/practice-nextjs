@@ -183,15 +183,15 @@ function Cart() {
   //   }
   // }, [carts, selectedItems]);
 
-  const newOrder: Order = {
-    userId: user.id,
-    order: orders,
-    total: total,
-    createdAt: new Date().toISOString(),
-    status: 'Pending',
-    address: address,
-    phone: phone,
-  };
+  // const newOrder: Order = {
+  //   userId: user.id,
+  //   order: orders,
+  //   total: total,
+  //   createdAt: new Date().toISOString(),
+  //   status: 'Pending',
+  //   address: address,
+  //   phone: phone,
+  // };
   // if (typeof window !== undefined) {
   //   localStorage.setItem('newOrders', JSON.stringify(newOrder));
   // }
