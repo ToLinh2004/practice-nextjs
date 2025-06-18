@@ -23,7 +23,7 @@ const { language } = useLanguage();
     img: '',
     price: 0,
     description: '',
-    size: [],
+    sizes: [],
     status: '',
     categoryName: '',
     discount: false,

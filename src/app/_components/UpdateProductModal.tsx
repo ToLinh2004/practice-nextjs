@@ -40,7 +40,7 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
       setPrice(product.price);
       setCategoryName(product.categoryName || '');
       setStatus(product.status || 'active');
-      setSizes(product.size || []);
+      setSizes(product.sizes || []);
       setDiscount(product.discount || false);
     }
   }, [product]);
@@ -96,16 +96,23 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
       description,
       categoryName,
       status,
-      size: sizes,
       discount,
+      sizes: sizes,
     };
 
     try {
-      const res = await updateProduct(id, dataUpload);
+      const res = await fetch(`/api/products/${id}`,{
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataUpload),
+      });
+      // const res = await updateProduct(id, dataUpload);
       if (res) {
         setShowModalUpdate(false);
         toast.success('Product updated successfully');
-        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
+        mutate('/api/products');
       } else {
         toast.error('Failed to update product');
       }
@@ -145,7 +152,7 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
       setPrice(product.price);
       setCategoryName(product.categoryName || '');
       setStatus(product.status || 'active');
-      setSizes(product.size || []);
+      setSizes(product.sizes || []);
       setDiscount(product.discount || false);
     }
   };

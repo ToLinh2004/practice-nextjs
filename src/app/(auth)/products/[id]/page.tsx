@@ -32,7 +32,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
     img: '',
     price: 0,
     description: '',
-    size: [],
+    sizes: [],
     status: '',
     categoryName: '',
     discount: false,
@@ -45,17 +45,20 @@ export default function DetailProductPage({ params }: { params: { id: number } }
   useEffect(() => {
     const getDetailProduct = async () => {
       try {
-        const data = await getProductById(params.id);
+        const res = await fetch(`/api/products/${params.id}`);
+        const data = await res.json();
         if (data) {
           setProduct(data);
           setSelectedSize(data.size[0]);
           fetchRelatedProducts(data.categoryName);
-          setLoading(false);
+          setLoading(true);
         } else {
           console.error('Fetch product detail that failed');
         }
       } catch (error) {
         console.error('Fetching product detail failed:', error);
+      }finally{
+        setLoading(false);
       }
     };
     getDetailProduct();
@@ -67,7 +70,8 @@ export default function DetailProductPage({ params }: { params: { id: number } }
 
   const fetchRelatedProducts = async (category: string) => {
     try {
-      const data = await getAllProduct();
+      const res = await fetch('/api/products');
+      const data = await res.json();
       const related = data.filter((product: Product) => product.categoryName === category && product.status === 'active');
       setRelatedProducts(related);
     } catch (error) {
@@ -143,7 +147,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
       toast.error('Please select a size');
     }
   };
-
+console.log('product', product);
   return (
     <>
       <TitilePage name={language === 'en'? "Product detail":"Sản phẩm chi tiết"} />
@@ -227,8 +231,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
                 <div className="">
                   <span className="mr-2 text-lg font-light">{language === 'en' ? 'Size' : 'Kích thước'}</span>
                   <div className="mt-2 flex flex-wrap space-x-2">
-                    {product.size
-                      .filter((size) => size.quantity > 0)
+                    {product?.sizes?.filter((size) => size.quantity > 0)
                       .map((size) => (
                         <button
                           key={size.size}

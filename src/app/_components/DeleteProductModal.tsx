@@ -5,7 +5,6 @@ import Form from 'react-bootstrap/Form';
 import { Product } from '@/app/types';
 import { mutate } from 'swr';
 import { toast } from 'react-toastify';
-import { deleteProduct } from '@/app/services/config';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
@@ -19,11 +18,11 @@ export default function DeleteProductModal({ showModalDelete, setShowModalDelete
 
   const handleDelete = async () => {
     try {
-      const res = await deleteProduct(product.id);
+      const res = await fetch(`/api/products/${product.id}`, { method: 'DELETE' });
       if (res) {
         setShowModalDelete(false);
         toast.success('Deleted product successfully');
-        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
+        mutate('/api/products');
       }
     } catch (error) {
       console.log('Error: ', error);
@@ -68,7 +67,7 @@ export default function DeleteProductModal({ showModalDelete, setShowModalDelete
                   <Form.Label className="text-md font-normal">{language === 'en' ? 'Image' : 'Ảnh'}</Form.Label>
 
                   <div>
-                    <Image src={product.img} width={200} height={80} alt="Product Image" className="h-40 w-72 rounded object-cover" />
+                    <Image src={product.img || '/no-image-available.png'} width={200} height={80} alt="Product Image" className="h-40 w-72 rounded object-cover" />
                   </div>
                 </Form.Group>
               </div>
@@ -78,7 +77,7 @@ export default function DeleteProductModal({ showModalDelete, setShowModalDelete
               <div className="mt-2">
                 <span>{language === 'en' ? 'Size' : 'Kích thước'}</span>
                 <div className="mt-2 grid grid-cols-4 gap-6 sm:grid-cols-1 sm:gap-4">
-                  {product.size.map((s, index) => (
+                  {product.sizes.map((s, index) => (
                     <div key={index} className="mb-2 flex items-center space-x-2">
                       <input type="text" value={s.size} placeholder="Size" className="w-16 rounded-sm border p-1 focus:outline-none" />
                       <input

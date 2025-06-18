@@ -9,9 +9,8 @@ import LoadingPage from '@/app/_components/Loading';
 import { useLoginContext } from '@/app/context/UserContext';
 import NotFound from '@/app/not-found';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
-import RootLayout from '@/app/layout';
 
-export default function ShowProduct({
+function ShowProduct({
   searchParams,
 }: {
   searchParams?: {
@@ -23,7 +22,7 @@ export default function ShowProduct({
 
   const query = searchParams?.query || '';
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, isLoading } = useSWR('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products', fetcher, {
+  const { data, isLoading } = useSWR('/api/products', fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -57,17 +56,25 @@ export default function ShowProduct({
 
   return (
     <>
-        <Suspense fallback={<div>{language === 'en' ? 'Loading...' : 'Đang tải ...'}</div>}>
-          {loggedIn && user.role === 'admin' ? (
-            <>
-              <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
-              <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
-            </>
-          ) : (
-            <NotFound />
-          )}
-        </Suspense>
+      {loggedIn && user.role === 'admin' ? (
+        <>
+          <DTable products={displayedProducts} query={query} link="/dashboard/products/show" />
+          <MyPaginationComponent totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />{' '}
+        </>
+      ) : (
+        <NotFound />
+      )}
+    </>
+  );
+}
 
+export default function DisplayProductPage() {
+  const { language } = useLanguage();
+  return (
+    <>
+      <Suspense fallback={<div>{language === 'en' ? 'Loading...' : 'Đang tải ...'}</div>}>
+        <ShowProduct />
+      </Suspense>
     </>
   );
 }

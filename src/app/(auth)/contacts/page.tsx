@@ -63,7 +63,7 @@ const { language } = useLanguage();
       const res = await createContact(fullName, phone, email, message, status);
       if (res) {
         toast.success('Send feedback successfully');
-        mutate('https://65200b03906e276284c3f31a.mockapi.io/contacts');
+        mutate('/api/contacts');
       } else {
         toast.error('Send email failed');
       }

@@ -5,31 +5,32 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'encrypted-tbn0.gstatic.com',
-        port: '',
-        pathname: '/images/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'loremflickr.com',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'www.espamob.com',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'static.nike.com',
-        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
         pathname: '/**',
       },
     ],
   },
-  reactStrictMode: false,
-  devtool: 'source-map',
+  reactStrictMode: true, 
+  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;

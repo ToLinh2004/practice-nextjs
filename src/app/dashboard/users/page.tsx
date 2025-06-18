@@ -19,7 +19,7 @@ export default function ShowUser({
     query?: string;
   };
 }) {
-  const {  user } = useLoginContext();
+  const { user } = useLoginContext();
   const { language } = useLanguage();
 
   const query = searchParams?.query || '';
@@ -27,7 +27,7 @@ export default function ShowUser({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, isLoading } = useSWR('https://6520d291906e276284c4b0d2.mockapi.io/api/1/users', fetcher, {
+  const { data, isLoading } = useSWR('/api/users', fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -36,7 +36,7 @@ export default function ShowUser({
   const updateStatus = async (id: number, status: string) => {
     try {
       const changedStatus = status === 'Active' ? 'Inactive' : 'Active';
-      const res = await fetch(`https://6520d291906e276284c4b0d2.mockapi.io/api/1/users/${id}`, {
+      const res = await fetch(`/api/users/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export default function ShowUser({
               : user,
           ),
         );
-        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/users');
+        mutate('/api/users');
 
         toast.success('Updated status successfully');
       } else {
@@ -144,7 +144,12 @@ export default function ShowUser({
                           <tr key={item.id} className="border-1 transition duration-300 ease-in-out hover:bg-gray-100">
                             <td className="whitespace-nowrap py-4 pl-2 text-sm font-medium text-gray-900">{item.id}</td>
                             <td className="whitespace-nowrap py-4 pl-2">
-                              <Image src={item.avatar} alt="" height={100} width={100} className="" />
+                              <Image
+                                src={item.avatar || '/user.png'} // Hình mặc định nếu không có avatar
+                                alt={item.fullName || 'User avatar'}
+                                height={100}
+                                width={100}
+                              />
                             </td>
                             <td className="whitespace-nowrap py-4 text-center text-sm text-gray-900">{item.fullName}</td>
                             <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal py-4 text-center text-sm text-gray-900">

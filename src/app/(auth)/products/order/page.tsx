@@ -11,7 +11,7 @@ import TitilePage from '@/app/_components/Titile';
 import { useLoginContext } from '@/app/context/UserContext';
 import LoadingPage from '@/app/_components/Loading';
 import Footer from '@/app/_components/Footer';
-export default function OrderHistoryPage() {
+function OrderHistory() {
   const { language } = useLanguage();
   const searchParams = useSearchParams();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -29,7 +29,8 @@ export default function OrderHistoryPage() {
       const orderUserItems = res.filter((order: Order) => order.userId === user.id);
       if (orderUserItems) {
         setOrders(orderUserItems);
-        const productData = await getAllProduct();
+        const res = await fetch('/api/products');
+        const productData = await res.json();
         setProducts(productData);
         setLoading(false);
       } else {
@@ -136,7 +137,6 @@ export default function OrderHistoryPage() {
   return (
     <>
       <TitilePage name={language === 'en' ? 'All Orders' : 'Tất cả đơn hàng'} />
-      <Suspense fallback={<LoadingPage />}>
         {orders?.length === 0 ? (
           <div className="mx-20 mt-72 rounded-lg bg-gray-100 p-4 shadow-lg">
             <span className="flex justify-center text-center">{language === 'en' ? 'No orders found' : 'Không có đơn hàng'}</span>
@@ -205,8 +205,15 @@ export default function OrderHistoryPage() {
             </table>
           </div>
         )}
-      </Suspense>
       <Footer />
     </>
   );
+}
+
+export default function OrderHistoryPage(){
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <OrderHistory />
+    </Suspense>
+  )
 }

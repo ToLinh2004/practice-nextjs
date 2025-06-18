@@ -14,7 +14,9 @@ import TitilePage from '@/app/_components/Titile';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 import LoadingPage from '@/app/_components/Loading';
 import Footer from '@/app/_components/Footer';
-export default function CartPage() {
+export const dynamic = 'force-dynamic';
+
+function Cart() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [carts, setCarts] = useState<CartItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,7 +40,8 @@ export default function CartPage() {
         if (cartUserItems) {
           setCarts(cartUserItems);
           setCartCount(cartUserItems.length);
-          const productData = await getAllProduct();
+          const res = await fetch('/api/products');
+          const productData = await res.json();
           setProducts(productData);
           setLoading(false);
         } else {
@@ -121,38 +124,37 @@ export default function CartPage() {
 
   const handleCheckout = async (e: MouseEvent) => {
     e.preventDefault();
-    const errors: Errors = {};
-    if (!address) {
-      errors.address = 'Address is required';
-    }
-    if (!phone) {
-      errors.phone = 'Phone is required';
-    } else if (!phone.match(/^[0-9]{10}$/)) {
-      errors.phone = 'Enter valid phone ';
-    }
-    setErrors(errors);
+    // const errors: Errors = {};
+    // if (!address) {
+    //   errors.address = 'Address is required';
+    // }
+    // if (!phone) {
+    //   errors.phone = 'Phone is required';
+    // } else if (!phone.match(/^[0-9]{10}$/)) {
+    //   errors.phone = 'Enter valid phone ';
+    // }
+    // setErrors(errors);
 
-    if (Object.keys(errors).length > 0) {
-      toast.error('Type address');
-      return;
-    }
+    // if (Object.keys(errors).length > 0) {
+    //   toast.error('Type address');
+    //   return;
+    // }
     try {
-      const response = await fetch('/api/payment', {
+      const response = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: total.toString(),
-          ipAddr: '13.160.92.202',
-          txnRef: generateFiveDigitNumber(),
-          orderInfo: total,
-          returnUrl: 'http://localhost:3000/products/order',
+          amount: 100000,
+          orderId: generateFiveDigitNumber(),
+          orderInfo: total
         }),
       });
-      const result = await response.json();
-      if (result.paymentUrl) {
-        window.location.href = result.paymentUrl;
+      const { paymentUrl } = await response.json();
+      console.log(decodeURIComponent(paymentUrl));
+      if (paymentUrl) {
+        window.location.href = paymentUrl; // Redirect to VNPay payment page
       } else {
-        toast.error('Payment failed');
+       toast.error('Payment failed');
       }
     } catch (error) {
       console.error('Payment failed:', error);
@@ -160,25 +162,26 @@ export default function CartPage() {
     }
   };
 
-  useEffect(() => {
-    const orderItems: OrderItem[] = carts
-      .filter((cartItem) => selectedItems.has(cartItem.id))
-      .map((cartItem) => ({
-        cartId: cartItem.id,
-        productId: cartItem.productId,
-        quantity: cartItem.quantity,
-        size: cartItem.size,
-        price: cartItem.price,
-      }));
-    if (typeof window !== undefined) {
-      localStorage.setItem('orderItems', JSON.stringify(orderItems));
-      const storedOrderItems = localStorage.getItem('orderItems');
-      if (storedOrderItems) {
-        const parsedOrderItems: OrderItem[] = JSON.parse(storedOrderItems);
-        setOrders(parsedOrderItems);
-      }
-    }
-  }, [carts, selectedItems]);
+  // useEffect(() => {
+  //   const orderItems: OrderItem[] = carts
+  //     .filter((cartItem) => selectedItems.has(cartItem.id))
+  //     .map((cartItem) => ({
+  //       cartId: cartItem.id,
+  //       productId: cartItem.productId,
+  //       quantity: cartItem.quantity,
+  //       size: cartItem.size,
+  //       price: cartItem.price,
+  //     }));
+  //   if (typeof window !== undefined) {
+  //     localStorage.setItem('orderItems', JSON.stringify(orderItems));
+  //     localStorage.setItem('newOrders', JSON.stringify(newOrder));
+  //     const storedOrderItems = localStorage.getItem('orderItems');
+  //     if (storedOrderItems) {
+  //       const parsedOrderItems: OrderItem[] = JSON.parse(storedOrderItems);
+  //       setOrders(parsedOrderItems);
+  //     }
+  //   }
+  // }, [carts, selectedItems]);
 
   const newOrder: Order = {
     userId: user.id,
@@ -189,9 +192,9 @@ export default function CartPage() {
     address: address,
     phone: phone,
   };
-  if (typeof window !== undefined) {
-    localStorage.setItem('newOrders', JSON.stringify(newOrder));
-  }
+  // if (typeof window !== undefined) {
+  //   localStorage.setItem('newOrders', JSON.stringify(newOrder));
+  // }
 
   const handleCheckboxChange = (id: number) => {
     setSelectedItems((prevSelected) => {
@@ -208,7 +211,6 @@ export default function CartPage() {
   return (
     <>
       <TitilePage name={language === 'en' ? 'Show Cart' : 'Giỏ Hàng'} />
-      <Suspense fallback={<LoadingPage />}>
         {carts.length === 0 ? (
           <div className="mx-20 mt-72 rounded-lg bg-gray-100 p-4 shadow-lg">
             <span className="flex justify-center text-center">{language === 'en' ? 'No items in the cart' : 'Giỏ hàng trống'}</span>
@@ -246,7 +248,7 @@ export default function CartPage() {
                         </td>
                         <td className="px-4 py-2">
                           <span className="font-semibold hover:text-blue-600">{product.name}</span>
-                          <div className="text-sm text-gray-500">{`SIZE: ${product.size.find((size) => size.size === cartItem.size)?.size}`}</div>
+                          <div className="text-sm text-gray-500">{`SIZE: ${product.sizes.find((size) => size.size === cartItem.size)?.size}`}</div>
                         </td>
                         <td className="px-4 py-2"></td>
                         <td className="px-4 py-2 text-left">
@@ -351,8 +353,15 @@ export default function CartPage() {
             </div>
           </div>
         )}
-      </Suspense>
       <Footer />
     </>
   );
+}
+
+export default function CartPage(){
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <Cart />
+    </Suspense>
+  )
 }

@@ -26,7 +26,7 @@ export default function ShowContact() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, isLoading } = useSWR('https://65200b03906e276284c3f31a.mockapi.io/contacts', fetcher, {
+  const { data, isLoading } = useSWR('/api/contacts', fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,

@@ -10,8 +10,9 @@ import { useSearchParams } from 'next/navigation';
 import TitilePage from '@/app/_components/Titile';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 import Footer from '@/app/_components/Footer';
+import LoadingPage from '@/app/_components/Loading';
 
-export default function ProductPage() {
+function ProductShow() {
   const searchParams = useSearchParams();
   const query = searchParams.get('query') || '';
   const [products, setProducts] = useState<Product[]>([]);
@@ -35,7 +36,8 @@ export default function ProductPage() {
   const fetchProducts = async (category: string) => {
     setLoading(true);
     try {
-      const data = await getAllProduct();
+      const res = await fetch('/api/products');
+      const data = await res.json();
       const dataFashion = data.filter((product: Product) => product.categoryName === category && product.status === 'active');
       if (dataFashion) {
         setProducts(dataFashion);
@@ -56,7 +58,6 @@ export default function ProductPage() {
   return (
     <>
       <TitilePage name="Product " />
-      <Suspense>
         <div className="mx-20 my-10 rounded-lg bg-gray-100 p-4 shadow-lg sm:mx-0">
           <div className="my-10 flex items-center justify-between">
             <div className="mt-10 text-2xl sm:text-sm">
@@ -120,8 +121,15 @@ export default function ProductPage() {
           )}
           <FamousBrand />
         </div>
-      </Suspense>
       <Footer />
     </>
+  );
+}
+
+export default function ProductPage(){
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <ProductShow />
+    </Suspense>
   );
 }

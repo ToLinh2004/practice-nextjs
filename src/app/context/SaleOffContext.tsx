@@ -14,7 +14,8 @@ export const SaleOffProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchSaleOffProducts = async () => {
       try {
-        const data = await getAllProduct();
+        const res = await fetch('/api/products');
+        const data = await res.json();
         const dataDiscount = data.filter((product: Product) => product.discount && product.status === 'active');
         if (dataDiscount) {
           setSaleOffProducts(dataDiscount);
@@ -31,7 +32,8 @@ export const SaleOffProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
-        const data = await getAllProduct();
+        const res = await fetch('/api/products');
+        const data = await res.json();
         const dataPopular = data.filter((product: Product) => product.price >= 90 && product.status === 'active');
         if (dataPopular) {
           setPopularProducts(dataPopular);

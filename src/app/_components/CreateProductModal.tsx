@@ -102,7 +102,23 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
     if (Object.keys(errorMessages).length > 0) return;
 
     try {
-      const res = await createProduct(name, img, price, description, sizes, status, categoryName, discount);
+      // const res = await createProduct(name, img, price, description, sizes, status, categoryName, discount);
+     const res = await fetch('/api/products', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         name,
+         img,
+         price,
+         description,
+         categoryName,
+         status,
+         discount,
+         sizes,
+       }),
+     });
       if (res) {
         setShowModalCreate(false);
         toast.success('Product created successfully');
@@ -114,7 +130,7 @@ export default function CreateProductModal({ showModalCreate, setShowModalCreate
         setDescription('');
         setCategoryName('');
         setDiscount(false);
-        mutate('https://6520d291906e276284c4b0d2.mockapi.io/api/1/products');
+        mutate('/api/products');
       } else {
         toast.error('Failed to create product');
       }

@@ -49,7 +49,8 @@ export default function ShowOrder() {
 
   const fetchProduct = async () => {
     try {
-      const productData = await getAllProduct();
+      const res = await fetch('/api/products');
+      const productData = await res.json();
       if (productData) {
         setProducts(productData);
       }
