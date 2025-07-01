@@ -85,32 +85,26 @@ export interface CartItem {
   size: string;
   price: number;
 }
-
-export interface OrderItem {
+export type OrderItem = {
   productId: number;
+  productName: string;
+  productImage: string;
   quantity: number;
-  price: number;
   size: string;
-  cartId: number
-}
+  price: number;
+  discount: number;
+};
 
-export interface Order {
-  userId: number;
-  productId:number;
-  productName:string;
-  producImage:string;
-  price: number;
-  quantity: number;
-  discount:boolean;
-  size: string;
-  order: OrderItem[];
-  total: number;
+export type Order = {
+  orderId: number;
+  userId?:number;
   createdAt: string;
   status: string;
-  id?: number;
   address: string;
   phone: string;
-}
+  total: number;
+  items: OrderItem[];
+};
 
 
 export interface SaleOffContextType {

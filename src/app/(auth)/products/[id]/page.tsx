@@ -4,24 +4,20 @@ import FamousBrand from '@/app/_components/FamousBrand';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProductPropose from '@/app/_components/ProductPropose';
-import { Product, Size, CartItem } from '@/app/types';
-import { addToCart, getAllProduct, getProductById, getCart, updateCartItem } from '@/app/services/config';
+import { Product, Size } from '@/app/types';
 import { useLoginContext } from '@/app/context/UserContext';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import CreateModalLogin from '@/app/_components/CreateModalLogin';
 import TitilePage from '@/app/_components/Titile';
-import { useCart } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 import Footer from '@/app/_components/Footer';
 
 export default function DetailProductPage({ params }: { params: { id: number } }) {
   const { user } = useLoginContext();
-  const [carts, setCarts] = useState<CartItem[]>([]);
   const router = useRouter();
   const [showCreateModalLogin, setShowCreateModalLogin] = useState<boolean>(false);
-  const { cartCount, setCartCount } = useCart();
   const { language } = useLanguage();
   const related_product = language === 'en' ? 'Related Products' : 'Sản phẩm liên quan';
   const [loading, setLoading] = useState<boolean>(true);
@@ -46,8 +42,8 @@ export default function DetailProductPage({ params }: { params: { id: number } }
     const getDetailProduct = async () => {
       try {
         const res = await fetch(`/api/products/${params.id}`);
-        const data = await res.json();
-        if (data) {
+        const {success,data} = await res.json();
+        if (success) {
           setProduct(data);
           setSelectedSize(data.size[0]);
           fetchRelatedProducts(data.categoryName);
@@ -71,7 +67,7 @@ export default function DetailProductPage({ params }: { params: { id: number } }
   const fetchRelatedProducts = async (category: string) => {
     try {
       const res = await fetch('/api/products');
-      const data = await res.json();
+      const { success, data } = await res.json();
       const related = data.filter((product: Product) => product.categoryName === category && product.status === 'active');
       setRelatedProducts(related);
     } catch (error) {
@@ -98,56 +94,38 @@ export default function DetailProductPage({ params }: { params: { id: number } }
     });
   };
 
-  useEffect(() => {
-    const getAllCart = async () => {
-      try {
-        const data = await getCart();
-        const cartUserItems = data.filter((cart: CartItem) => cart.userId === user.id);
-        if (cartUserItems) {
-          setCarts(cartUserItems);
-        } else {
-          console.error('Fetch cart that failed');
-        }
-      } catch (error) {
-        console.error('Fetching cart failed:', error);
-      }
-    };
-    if (user) {
-      getAllCart();
-    }
-  }, [user]);
-
   const handleAddToCart = async () => {
     if (!user.id) {
       setShowCreateModalLogin(true);
       return;
     }
+    
     if (selectedSize) {
       try {
-        const existingItem = carts.find((item: CartItem) => item.productId === product.id && item.size === selectedSize.size);
-        if (existingItem) {
-          const updatedItem: CartItem = {
-            ...existingItem,
-            quantity: existingItem.quantity + quantity,
-          };
-          await updateCartItem(existingItem.id, updatedItem);
+        const res = await fetch('/api/carts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            productId: product.id,
+            quantity: quantity,
+            size: selectedSize?.size,
+            price: product.price,
+          }),
+        });
+
+        const {success} = await res.json();
+        if(success){
           toast.success('Added to cart successfully');
-        } else {
-          const newItem = await addToCart(user.id, product.id, quantity, selectedSize.size, product.price);
-          if (newItem) {
-            toast.success('Added to cart successfully');
-            setCartCount(cartCount + 1);
-          }
         }
+        
       } catch (error) {
         console.error('Add to cart failed:', error);
-        toast.error('Add to cart failed');
       }
     } else {
       toast.error('Please select a size');
     }
   };
-console.log('product', product);
   return (
     <>
       <TitilePage name={language === 'en'? "Product detail":"Sản phẩm chi tiết"} />

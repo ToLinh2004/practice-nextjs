@@ -1,63 +1,103 @@
 import { db } from '@/app/_lib/db';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 export async function GET() {
   try {
-    const [rows] = await db.query(`
-        SELECT 
-          o.id AS orderId,
-          o.userId,
-          o.createdAt,
-          o.status,
-          o.address,
-          o.phone,
-          o.total,
-          oi.productId,
-          oi.quantity,
-          oi.size,
-          oi.price,
-          p.name AS productName,
-          p.discount,
-          p.img AS productImage
-        FROM orders o
-        JOIN order_items oi ON o.id = oi.orderId
-        JOIN products p ON oi.productId = p.id
-        ORDER BY o.createdAt DESC;
-      `);
+    // Query lấy tất cả orders + join items
+    const [orders] = await db.query<any[]>(`
+      SELECT 
+        o.id AS orderId,
+        o.userId,
+        o.total,
+        o.phone,
+        o.address,
+        o.status,
+        o.createdAt,
+        oi.productId,
+        p.name AS productName,
+        p.image AS productImage,
+        oi.quantity,
+        oi.size,
+        oi.price,
+        p.discount
+      FROM \`Order\` o
+      LEFT JOIN OrderItem oi ON o.id = oi.orderId
+      LEFT JOIN Product p ON oi.productId = p.id
+      ORDER BY o.createdAt DESC
+    `);
 
-    // Group các item theo orderId
-    const ordersMap = new Map();
-
-    for (const row of rows as any[]) {
-      if (!ordersMap.has(row.orderId)) {
-        ordersMap.set(row.orderId, {
-          id: row.orderId,
+    // Gom theo orderId
+    const grouped = orders.reduce<Record<number, any>>((acc, row) => {
+      if (!acc[row.orderId]) {
+        acc[row.orderId] = {
+          orderId: row.orderId,
           userId: row.userId,
-          createdAt: row.createdAt,
-          status: row.status,
-          address: row.address,
-          phone: row.phone,
           total: row.total,
-          order: [], // mảng sản phẩm
-        });
+          phone: row.phone,
+          address: row.address,
+          status: row.status,
+          createdAt: row.createdAt,
+          items: [],
+        };
       }
-
-      ordersMap.get(row.orderId).order.push({
+      acc[row.orderId].items.push({
         productId: row.productId,
+        productName: row.productName,
+        productImage: row.productImage,
         quantity: row.quantity,
         size: row.size,
         price: row.price,
-        productName: row.productName,
         discount: row.discount,
-        img: row.productImage,
       });
+      return acc;
+    }, {});
+
+    // Convert object thành array
+    const result = Object.values(grouped);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+
+  try {
+    const body = await req.json();
+    const { userId, address, phone, items, total } = body;
+
+    if (!userId || !address || !phone || !Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
     }
 
-    const orders = Array.from(ordersMap.values());
+    const [orderResult] = await db.query(
+      `INSERT INTO \`Order\` (userId, total, status, address, phone, createdAt, created_at, updated_at)
+   VALUES (?, ?, 'Pending', ?, ?, NOW(), NOW(), NOW())`,
+      [userId, total, address, phone],
+    );
 
-    return NextResponse.json(orders);
+    const orderId = (orderResult as any).insertId;
+
+    // Tạo OrderItem
+    const insertPromises = items.map((item) =>
+      db.query(
+        `INSERT INTO OrderItem (orderId, productId, quantity, size, price, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, NOW(), NOW())`,
+        [orderId, item.productId, item.quantity, item.size, item.price],
+      ),
+    );
+
+    await Promise.all(insertPromises);
+    return NextResponse.json({
+      success: true,
+      message: 'Order created successfully',
+      orderId,
+    });
   } catch (error) {
-    console.error('Failed to fetch orders:', error);
-    return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ success: false, message: 'Error creating order' }, { status: 500 });
+  } finally {
   }
 }
   

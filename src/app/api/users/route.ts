@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const [rows] = await db.query('SELECT * FROM users');
+    const [rows] = await db.query('SELECT * FROM User');
     return NextResponse.json(rows);
   } catch (err) {
     return NextResponse.json({ error: 'Query failed' }, { status: 500 });
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     }
 
     const [result]:any = await db.query(
-      `INSERT INTO users (email, password, fullName, avatar, role, status)
+      `INSERT INTO User (email, password, fullName, avatar, role, status)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [email, password, fullName, avatar, role, status]
     );

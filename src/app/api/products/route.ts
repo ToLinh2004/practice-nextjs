@@ -15,15 +15,18 @@ export async function GET() {
         p.discount,
         ps.size,
         ps.quantity
-      FROM products p
-      LEFT JOIN product_sizes ps ON p.id = ps.product_id
+      FROM Product p
+      LEFT JOIN ProductSize ps ON p.id = ps.productId
+       ORDER BY
+        p.created_at DESC
     `);
 
     // Gom các size vào từng sản phẩm
-    const productsMap: { [key: number]: any } = {};
+    const grouped = new Map<number, any>();
+
     for (const row of rows as any[]) {
-      if (!productsMap[row.productId]) {
-        productsMap[row.productId] = {
+      if (!grouped.has(row.productId)) {
+        grouped.set(row.productId, {
           id: row.productId,
           name: row.name,
           img: row.img,
@@ -31,24 +34,28 @@ export async function GET() {
           description: row.description,
           categoryName: row.categoryName,
           status: row.status,
-          discount: row.discount,
+          discount: !!row.discount,
           sizes: [],
-        };
+        });
       }
 
       if (row.size) {
-        productsMap[row.productId].sizes.push({
+        grouped.get(row.productId).sizes.push({
           size: row.size,
           quantity: row.quantity,
         });
       }
     }
 
-    const products = Object.values(productsMap);
-    return NextResponse.json(products);
+    const products = Array.from(grouped.values());
+
+    return NextResponse.json({
+      success: true,
+      data: products,
+    });
   } catch (err) {
-    console.error('Query failed:', err);
-    return NextResponse.json({ error: 'Query failed' }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ success: false, message: 'Error fetching products' }, { status: 500 });
   }
 }
 

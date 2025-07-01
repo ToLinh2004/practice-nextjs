@@ -37,7 +37,7 @@ function ProductShow() {
     setLoading(true);
     try {
       const res = await fetch('/api/products');
-      const data = await res.json();
+      const { success, data } = await res.json();
       const dataFashion = data.filter((product: Product) => product.categoryName === category && product.status === 'active');
       if (dataFashion) {
         setProducts(dataFashion);

@@ -34,7 +34,6 @@ export default function ProductPropose({ titleLeft, items }: ProductPropose) {
     return Math.round(price * 0.8);
   };
   const displayedItems = items.slice(currentIndex * itemsPerPage, currentIndex * itemsPerPage + itemsPerPage);
-
   return (
     <>
       <div className="mb-10 flex items-center justify-between sm:mb-4">

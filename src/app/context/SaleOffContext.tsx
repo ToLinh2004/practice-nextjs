@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getAllProduct } from '@/app/services/config';
 import { Product, SaleOffContextType } from '@/app/types';
+import NotFound from '@/app/not-found';
 
 const SaleOffContext = createContext<SaleOffContextType>({ saleOffProducts: [], popularProducts: [] });
 
@@ -15,12 +16,17 @@ export const SaleOffProvider = ({ children }: { children: ReactNode }) => {
     const fetchSaleOffProducts = async () => {
       try {
         const res = await fetch('/api/products');
-        const data = await res.json();
-        const dataDiscount = data.filter((product: Product) => product.discount && product.status === 'active');
-        if (dataDiscount) {
-          setSaleOffProducts(dataDiscount);
+        const { success, data } = await res.json();
+        if (success) {
+          const dataDiscount = data.filter((product: Product) => product.discount && product.status === 'active');
+          if (dataDiscount) {
+            setSaleOffProducts(dataDiscount);
+          } else {
+            NotFound();
+          }
         } else {
-          console.error('No discount products found');
+          NotFound();
+          return;
         }
       } catch (error) {
         console.log('Error: ', error);
@@ -33,12 +39,17 @@ export const SaleOffProvider = ({ children }: { children: ReactNode }) => {
     const fetchPopularProducts = async () => {
       try {
         const res = await fetch('/api/products');
-        const data = await res.json();
-        const dataPopular = data.filter((product: Product) => product.price >= 90 && product.status === 'active');
-        if (dataPopular) {
-          setPopularProducts(dataPopular);
+        const { success, data } = await res.json();
+        if (success) {
+          const dataPopular = data.filter((product: Product) => product.price >= 90 && product.status === 'active');
+          if (dataPopular) {
+            setPopularProducts(dataPopular);
+          } else {
+            NotFound();
+          }
         } else {
-          console.error('No popular products found');
+          NotFound();
+          return;
         }
       } catch (error) {
         console.log('Error: ', error);

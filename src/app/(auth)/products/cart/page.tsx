@@ -1,9 +1,8 @@
 'use client';
 import { Suspense } from 'react';
-import { deleteCartById, getAllProduct, getCart, getProductById, updateCartItem } from '@/app/services/config';
 import { useEffect, useState } from 'react';
 import { useLoginContext } from '@/app/context/UserContext';
-import { Product, CartItem, InputEvent, OrderItem, Order, Errors, MouseEvent } from '@/app/types';
+import { Product, CartItem, InputEvent, Errors, MouseEvent } from '@/app/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
@@ -26,32 +25,31 @@ function Cart() {
   const { user } = useLoginContext();
   const { setCartCount } = useCart();
   const { language } = useLanguage();
-  const [orders, setOrders] = useState<OrderItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [errors, setErrors] = useState<Errors>({});
   const [loading, setLoading] = useState<boolean>(true);
 
+  const getAllCart = async () => {
+    try {
+      const res = await fetch(`/api/carts/${user.id}`);
+      const { success, data } = await res.json();
+      if (success) {
+        setCarts(data);
+        setCartCount(data.length);
+        const res = await fetch('/api/products');
+        const productData = await res.json();
+        setProducts(productData.data);
+        setLoading(false);
+      } else {
+        console.error('Fetch cart failed');
+      }
+    } catch (error) {
+      console.error('Fetching cart failed:', error);
+    }
+  };
 
   useEffect(() => {
-    const getAllCart = async () => {
-      try {
-        const data = await getCart();
-        const cartUserItems = data.filter((cart: CartItem) => cart.userId === user.id);
-        if (cartUserItems) {
-          setCarts(cartUserItems);
-          setCartCount(cartUserItems.length);
-          const res = await fetch('/api/products');
-          const productData = await res.json();
-          setProducts(productData);
-          setLoading(false);
-        } else {
-          console.error('Fetch cart failed');
-        }
-      } catch (error) {
-        console.error('Fetching cart failed:', error);
-      }
-    };
-
+    
     getAllCart();
   }, []);
 
@@ -77,14 +75,8 @@ function Cart() {
 
   const handleDeleteCartItem = async (id: number) => {
     try {
-      const res = await deleteCartById(id);
+      const  res = await fetch(`/api/carts/${id}`, { method: 'DELETE' });
       if (res) {
-        setCarts(carts.filter((cart) => cart.id !== id));
-        setSelectedItems((prevSelected) => {
-          const newSelected = new Set(prevSelected);
-          newSelected.delete(id);
-          return newSelected;
-        });
         toast.success('Deleted product successfully');
       }
     } catch (error) {
@@ -93,28 +85,19 @@ function Cart() {
   };
 
   const handleQuantityChange = async (cartItem: CartItem, increment: boolean) => {
+    
     const updatedQuantity = increment ? cartItem.quantity + 1 : cartItem.quantity - 1;
-
-    if (updatedQuantity <= 0) return;
-
-    try {
-      const product = await getProductById(cartItem.productId);
-
-      const sizeObject = product.size.find((s: { size: string; quantity: number }) => s.size === cartItem.size);
-
-      const availableQuantity = sizeObject ? sizeObject.quantity : 0;
-
-      if (increment && updatedQuantity > availableQuantity) {
-        toast.error('Exceeds available quantity');
-        return;
-      }
-
-      const updatedCartItem = { ...cartItem, quantity: updatedQuantity };
-      await updateCartItem(updatedCartItem.id, updatedCartItem);
-      setCarts(carts.map((item) => (item.id === cartItem.id ? updatedCartItem : item)));
-      toast.success('Updated quantity successfully');
-    } catch (error) {
-      console.error('Updating quantity failed:', error);
+    const res = await fetch(`/api/carts/${cartItem.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quantity: updatedQuantity }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast.success(data.message);
+      getAllCart();
+    } else {
+      toast.error(data.message);
     }
   };
 
@@ -124,35 +107,55 @@ function Cart() {
 
   const handleCheckout = async (e: MouseEvent) => {
     e.preventDefault();
-    // const errors: Errors = {};
-    // if (!address) {
-    //   errors.address = 'Address is required';
-    // }
-    // if (!phone) {
-    //   errors.phone = 'Phone is required';
-    // } else if (!phone.match(/^[0-9]{10}$/)) {
-    //   errors.phone = 'Enter valid phone ';
-    // }
-    // setErrors(errors);
+    const errors: Errors = {};
+    if (!address) {
+      errors.address = 'Address is required';
+    }
+    if (!phone) {
+      errors.phone = 'Phone is required';
+    } else if (!phone.match(/^[0-9]{10}$/)) {
+      errors.phone = 'Enter valid phone ';
+    }
+    setErrors(errors);
 
-    // if (Object.keys(errors).length > 0) {
-    //   toast.error('Type address');
-    //   return;
-    // }
+    if (Object.keys(errors).length > 0) {
+      toast.error('Type address');
+      return;
+    }
+    const orderItems = carts
+      .filter((cartItem) => selectedItems.has(cartItem.id))
+      .map((cartItem) => {
+        const product = products.find((p) => p.id === cartItem.productId);
+        return {
+          productId: cartItem.productId,
+          quantity: cartItem.quantity,
+          size: cartItem.size,
+          price: product ? product.price : 0, // hoặc cartItem.price nếu bạn đã lưu sẵn
+        };
+      });
+
+    // Nếu chưa chọn sản phẩm nào
+    if (orderItems.length === 0) {
+      toast.error('Please select products to checkout');
+      return;
+    }
     try {
       const response = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: 100000,
-          orderId: generateFiveDigitNumber(),
-          orderInfo: total
+          userId: user.id,
+          address,
+          phone,
+          items: orderItems,
+          amount: total,
+          cartId: generateFiveDigitNumber(),
+          orderInfo: total,
         }),
       });
       const { paymentUrl } = await response.json();
-      console.log(decodeURIComponent(paymentUrl));
       if (paymentUrl) {
-        window.location.href = paymentUrl; // Redirect to VNPay payment page
+        window.location.href = paymentUrl; 
       } else {
        toast.error('Payment failed');
       }
@@ -161,40 +164,6 @@ function Cart() {
       toast.error('Payment failed');
     }
   };
-
-  // useEffect(() => {
-  //   const orderItems: OrderItem[] = carts
-  //     .filter((cartItem) => selectedItems.has(cartItem.id))
-  //     .map((cartItem) => ({
-  //       cartId: cartItem.id,
-  //       productId: cartItem.productId,
-  //       quantity: cartItem.quantity,
-  //       size: cartItem.size,
-  //       price: cartItem.price,
-  //     }));
-  //   if (typeof window !== undefined) {
-  //     localStorage.setItem('orderItems', JSON.stringify(orderItems));
-  //     localStorage.setItem('newOrders', JSON.stringify(newOrder));
-  //     const storedOrderItems = localStorage.getItem('orderItems');
-  //     if (storedOrderItems) {
-  //       const parsedOrderItems: OrderItem[] = JSON.parse(storedOrderItems);
-  //       setOrders(parsedOrderItems);
-  //     }
-  //   }
-  // }, [carts, selectedItems]);
-
-  // const newOrder: Order = {
-  //   userId: user.id,
-  //   order: orders,
-  //   total: total,
-  //   createdAt: new Date().toISOString(),
-  //   status: 'Pending',
-  //   address: address,
-  //   phone: phone,
-  // };
-  // if (typeof window !== undefined) {
-  //   localStorage.setItem('newOrders', JSON.stringify(newOrder));
-  // }
 
   const handleCheckboxChange = (id: number) => {
     setSelectedItems((prevSelected) => {

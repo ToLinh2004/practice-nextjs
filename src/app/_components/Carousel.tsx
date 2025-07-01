@@ -25,7 +25,9 @@ const { language } = useLanguage();
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
-        const allProducts: Product[] = await response.json();
+       
+        const { success, data }= await response.json();
+        const allProducts: Product[] = data;
         const filteredProducts = allProducts.filter((product) => product.categoryName.toLowerCase() === category.toLowerCase());
         const imageUrls = filteredProducts.map((product) => product.img);
         setProducts(imageUrls);

@@ -1,14 +1,11 @@
 'use client';
 import useSWR, { mutate } from 'swr';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import LoadingPage from '@/app/_components/Loading';
-import { Contact, Order, Product } from '@/app/types';
+import {  Order } from '@/app/types';
 import MyPaginationComponent from '@/app/_components/Pagination';
-import UpdateContactModal from '@/app/_components/UpdateContactModal';
 import Image from 'next/image';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
-import Link from 'next/link';
-import { getAllProduct, updateOrder } from '@/app/services/config';
 import { toast } from 'react-toastify';
 import { useLoginContext } from '@/app/context/UserContext';
 
@@ -41,7 +38,6 @@ export default function ShowOrder() {
   };
   const handleStatusChange = async (orderId: number, newStatus: string) => {
     try {
-      // const res = await updateOrder(orderId, newStatus);
       const res = await fetch(`/api/orders/${orderId}`, {
         method: 'PATCH',
         headers: {
@@ -111,45 +107,47 @@ export default function ShowOrder() {
                     </tr>
                   </thead>
                   <tbody>
-                    {displayedOrders.map((item) => (
-                      <tr key={item.id} className="border-1 transition duration-300 ease-in-out hover:bg-gray-100">
-                        <td className="whitespace-nowrap pl-4 text-sm font-medium text-gray-900">{item.id}</td>
-                        <td className="whitespace-nowrap pl-4 text-sm font-medium text-gray-900">{item.userId}</td>
+                    {displayedOrders.map((order) => (
+                      <tr key={order.orderId} className="border-1 transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td className="whitespace-nowrap pl-4 text-sm font-medium text-gray-900">{order.orderId}</td>
+                        <td className="whitespace-nowrap pl-4 text-sm font-medium text-gray-900">{order.userId}</td>
                         <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">
-                          <ul className="">
-                            <li className="mb-2 flex items-center space-x-4">
-                              <Image src={item.producImage} alt={item.productName} width={80} height={40} className="rounded object-cover" />
-                              <div className="flex flex-col">
-                                <span className="ml-2">
-                                  {' '}
-                                  {language === 'en' ? 'Quantity' : 'Số lượng'}: {item.quantity}
-                                </span>
-                                <span className="ml-2">
-                                  {' '}
-                                  {language === 'en' ? 'Name' : 'Tên'}: {item.producImage}
-                                </span>
-                                {item.discount ? (
-                                  <div className="flex flex-row">
-                                    <span className="ml-2">${(item.price * 0.9).toFixed(2)}</span>
-                                    <span className="ml-2 text-red-600 line-through">${item.price}</span>
-                                  </div>
-                                ) : (
-                                  <span className="ml-2">${item.price}</span>
-                                )}
-                              </div>
-                            </li>
-                          </ul>
+                          {order.items.map((item) => (
+                            <ul key={item.productId} className="">
+                              <li className="mb-2 flex items-center space-x-4">
+                                <Image src={item.productImage} alt={item.productName} width={80} height={40} className="rounded object-cover" />
+                                <div className="flex flex-col">
+                                  <span className="ml-2">
+                                    {' '}
+                                    {language === 'en' ? 'Quantity' : 'Số lượng'}: {item.quantity}
+                                  </span>
+                                  <span className="ml-2">
+                                    {' '}
+                                    {language === 'en' ? 'Name' : 'Tên'}: {item.productImage}
+                                  </span>
+                                  {item.discount ? (
+                                    <div className="flex flex-row">
+                                      <span className="ml-2">${(item.price * 0.9).toFixed(2)}</span>
+                                      <span className="ml-2 text-red-600 line-through">${item.price}</span>
+                                    </div>
+                                  ) : (
+                                    <span className="ml-2">${item.price}</span>
+                                  )}
+                                </div>
+                              </li>
+                            </ul>
+                          ))}
                         </td>
-                        <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">{item.total}</td>
-                        <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">{item.phone}</td>
-                        <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">{item.address}</td>
+                        <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">{order.total}</td>
+                        <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">{order.phone}</td>
+                        <td className="whitespace-nowrap text-sm text-gray-900 sm:pr-4">{order.address}</td>
 
-                        <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal text-sm text-gray-900 sm:pr-4">{item.createdAt}</td>
+                        <td className="max-h-14 max-w-80 overflow-hidden whitespace-normal text-sm text-gray-900 sm:pr-4">{order.createdAt}</td>
 
                         <td className="whitespace-nowrap sm:pr-4">
                           <select
-                            value={item.status}
-                            onChange={(e) => handleStatusChange(item.id!, e.target.value)}
+                            value={order.status}
+                            onChange={(e) => handleStatusChange(order.orderId!, e.target.value)}
                             className="ms-2 rounded border border-gray-300 bg-white py-1 text-sm text-blue-600"
                           >
                             <option value="Pending">{language === 'en' ? 'Pending' : 'Chờ xử lý'}</option>
