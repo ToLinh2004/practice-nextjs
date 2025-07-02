@@ -8,11 +8,35 @@ import FamousBrand from '@/app/_components/FamousBrand';
 import { useSaleOff } from '@/app/context/SaleOffContext';
 import TitilePage from '@/app/_components/Titile';
 import Footer from '@/app/_components/Footer';
+import { Product } from '@/app/types';
+import NotFound from '@/app/not-found';
 
 export default function ProductPage() {
-  const { saleOffProducts } = useSaleOff();
   const [timeLeft, setTimeLeft] = useState(86400000); // 24 hour in milliseconds
-
+    const [saleOffProducts, setSaleOffProducts] = useState<Product[]>([]);
+  
+ useEffect(() => {
+    const fetchSaleOffProducts = async () => {
+      try {
+        const res = await fetch('/api/products');
+        const { success, data } = await res.json();
+        if (success) {
+          const dataDiscount = data.filter((product: Product) => product.discount && product.status === 'active');
+          if (dataDiscount) {
+            setSaleOffProducts(dataDiscount);
+          } else {
+            NotFound();
+          }
+        } else {
+          NotFound();
+          return;
+        }
+      } catch (error) {
+        console.log('Error: ', error);
+      }
+    };
+    fetchSaleOffProducts();
+  }, []);
   useEffect(() => {
     const endTime = new Date().getTime() + timeLeft;
 

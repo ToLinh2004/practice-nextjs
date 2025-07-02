@@ -44,19 +44,20 @@ export default function ProductPropose({ titleLeft, items }: ProductPropose) {
         </div>
       </div>
 
-      <div className="relative ">
-        <div className="grid grid-cols-4 gap-4 sm:grid-cols-2 ">
+      <div className="relative">
+        <div className="grid grid-cols-4 gap-4 sm:grid-cols-2">
           {displayedItems?.map((product, index) => (
             <Link href={`/products/${product.id}`} key={index}>
               <div
                 className="group relative h-72 w-full rounded-lg bg-gray-300 shadow-lg transition-transform duration-500 ease-in-out hover:scale-105 sm:h-48"
                 key={index}
               >
-                <Image src={product.img} alt={product.name} layout='fill' objectFit='cover'/>
+                <Image src={product.img} alt={product.name} layout="fill" objectFit="cover" />
                 <span className="absolute left-4 bg-opacity-50 px-2 pt-2 text-center sm:pt-0 sm:text-sm">{product.name}</span>
                 <div className="absolute ml-6 mt-8 text-center sm:text-sm">
                   {product.discount ? <span className="mr-2">${calculateDiscountedPrice(product.price)}</span> : ''}
-                  <span className="text-red-600 line-through">${product.price}</span>
+                 {!product.discount ?  <span className="">${product.price}</span> : ""}
+                 {product.discount ?  <span className="text-red-600 line-through">${product.price}</span> : ""}
                 </div>
                 {product.discount ? (
                   <div className="absolute right-0 bg-red-600 px-2 py-1 text-white sm:px-0 sm:text-sm">

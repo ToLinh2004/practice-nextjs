@@ -118,7 +118,7 @@ export default function AdminProfile() {
             <b className="mb-6 block text-2xl text-blue-600">{language === 'en' ? 'About me' : 'Về tôi'}</b>
             <div className="flex">
               <div className="flex w-1/3 flex-col items-center">
-                <Image src={avatar} width={200} height={200} alt="Avatar" className="mb-2 h-36 w-36 rounded-full object-cover" />
+                <Image src={avatar || "/userProfile.png"} width={200} height={200} alt="Avatar" className="mb-2 h-36 w-36 rounded-full object-cover" />
                 <label
                   htmlFor="uploadFile1"
                   className="flex h-52 w-full max-w-sm cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-gray-300 bg-white font-[sans-serif] text-base font-semibold text-gray-500"

@@ -41,7 +41,7 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
       setCategoryName(product.categoryName || '');
       setStatus(product.status || 'active');
       setSizes(product.sizes || []);
-      setDiscount(product.discount || false);
+      setDiscount(Boolean(product.discount) || false);
     }
   }, [product]);
 
@@ -153,7 +153,7 @@ export default function UpdateProductModal({ showModalUpdate, setShowModalUpdate
       setCategoryName(product.categoryName || '');
       setStatus(product.status || 'active');
       setSizes(product.sizes || []);
-      setDiscount(product.discount || false);
+      setDiscount(Boolean(product.discount) || false);
     }
   };
 

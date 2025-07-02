@@ -134,8 +134,8 @@ export default function DetailProductPage({ params }: { params: { id: number } }
           {product.discount ? (
             <span className="absolute left-48 mt-10 flex h-12 w-12 items-center justify-center rounded-full bg-red-600 p-3 text-white">-10%</span>
           ) : null}
-          <button className="left-30 absolute mt-48 w-8 text-2xl hover:bg-blue-600" onClick={handleTurnBack}>
-            <FontAwesomeIcon icon={faArrowLeft} className="text-2xl text-blue-600 hover:text-white" />
+          <button className="left-30 absolute mt-48 w-8 text-2xl" onClick={handleTurnBack}>
+            <FontAwesomeIcon icon={faArrowLeft} className="text-2xl text-blue-600" />
           </button>
 
           <div className="relative ml-40 w-72">

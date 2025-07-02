@@ -11,14 +11,12 @@ import { useSidebarContext } from '@/app/context/SidebarContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { MouseEvent } from '@/app/types';
-import { useCart } from '@/app/context/CartContext';
 import Form from 'react-bootstrap/Form';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 
 export default function Header() {
   const { language, setLanguage } = useLanguage();
   const { loggedIn, setLoggedIn, user, setUser } = useLoginContext();
-  const { setCartCount } = useCart();
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
@@ -29,7 +27,6 @@ export default function Header() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { cartCount } = useCart();
 
   useEffect(() => {
     const storedLanguage = localStorage.getItem('language') || 'en';
@@ -74,7 +71,6 @@ export default function Header() {
       date: '',
       phone: '',
     });
-    setCartCount(0);
     router.push('/');
   };
 
@@ -123,9 +119,8 @@ export default function Header() {
                   <Link href="/products/cart" className="ml-20 basis-1 rounded-md bg-yellow-300 hover:bg-white">
                     <div className="relative flex">
                       <FontAwesomeIcon icon={faShoppingCart} className="mt-2 w-12 text-black" />
-                      <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-white text-sm">
-                        {cartCount}
-                      </span>
+                      {/* <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-white text-sm">
+                      </span> */}
                     </div>
                   </Link>
                 </div>

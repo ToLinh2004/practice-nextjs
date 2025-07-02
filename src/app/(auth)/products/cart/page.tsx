@@ -8,7 +8,6 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
-import { useCart } from '@/app/context/CartContext';
 import TitilePage from '@/app/_components/Titile';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 import LoadingPage from '@/app/_components/Loading';
@@ -23,7 +22,7 @@ function Cart() {
   const [address, setAddress] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const { user } = useLoginContext();
-  const { setCartCount } = useCart();
+  
   const { language } = useLanguage();
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [errors, setErrors] = useState<Errors>({});
@@ -35,7 +34,6 @@ function Cart() {
       const { success, data } = await res.json();
       if (success) {
         setCarts(data);
-        setCartCount(data.length);
         const res = await fetch('/api/products');
         const productData = await res.json();
         setProducts(productData.data);
@@ -78,6 +76,7 @@ function Cart() {
       const  res = await fetch(`/api/carts/${id}`, { method: 'DELETE' });
       if (res) {
         toast.success('Deleted product successfully');
+        getAllCart();
       }
     } catch (error) {
       console.error('Delete cart failed:', error);

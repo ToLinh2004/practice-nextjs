@@ -4,44 +4,68 @@ import Carousel from '@/app/_components/Carousel';
 import ProductPropose from '@/app/_components/ProductPropose';
 import FamousBrand from '@/app/_components/FamousBrand';
 import { useState, useEffect } from 'react';
-import { useSaleOff } from '@/app/context/SaleOffContext';
 import TitilePage from '@/app/_components/Titile';
-import { useCart } from '@/app/context/CartContext';
-import { getCart } from '@/app/services/config';
-import { CartItem } from '@/app/types';
-import { useLoginContext } from '@/app/context/UserContext';
 import { useLanguage } from '@/app/context/ChangeLanguageContext';
 import Footer from '@/app/_components/Footer';
+import { Product } from '@/app/types';
+import NotFound from '@/app/not-found';
 
 
 const Home = () => {
-  const {user, loggedIn } = useLoginContext();
   const [timeLeft, setTimeLeft] = useState(86400000);
-  const { saleOffProducts, popularProducts } = useSaleOff();
- const { setCartCount } = useCart();
 const { language } = useLanguage();
 const fashion = language === 'en' ? 'Fahsion Shoes' : 'Giày Thời Trang';
 const sport = language === 'en' ? 'Sport Shoes' : 'Giày Thể Thao';
 const popular_product = language === 'en' ? 'Popular Products' : 'Sản phẩm nổi bật';
+const [saleOffProducts, setSaleOffProducts] = useState<Product[]>([]);
+const [popularProducts, setPopularProducts] = useState<Product[]>([]);
 
- useEffect(() => {
-   const getAllCart = async () => {
-     try {
-       const data = await getCart();
-       const cartUserItems = data.filter((cart: CartItem) => cart.userId === user.id);
-       if (cartUserItems) {
-         setCartCount(cartUserItems.length);
-       } else {
-         console.error('Fetch cart failed');
-       }
-     } catch (error) {
-       console.error('Fetching cart failed:', error);
-     }
-   };
-   if (loggedIn) {
-     getAllCart();
-   }
- }, [loggedIn]);
+useEffect(() => {
+  const fetchSaleOffProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const { success, data } = await res.json();
+      if (success) {
+        const dataDiscount = data.filter((product: Product) => product.discount && product.status === 'active');
+        if (dataDiscount) {
+          setSaleOffProducts(dataDiscount);
+        } else {
+          NotFound();
+        }
+      } else {
+        NotFound();
+        return;
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+  fetchSaleOffProducts();
+}, []);
+
+useEffect(() => {
+  const fetchPopularProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const { success, data } = await res.json();
+      if (success) {
+        const dataPopular = data.filter((product: Product) => product.price >= 90 && product.status === 'active');
+        if (dataPopular) {
+          setPopularProducts(dataPopular);
+        } else {
+          NotFound();
+        }
+      } else {
+        NotFound();
+        return;
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+  fetchPopularProducts();
+}, []);
+
   useEffect(() => {
     const endTime = new Date().getTime() + timeLeft;
 

@@ -10,7 +10,6 @@ import { LoginProvider } from '@/app/context/UserContext';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Footer from '@/app/_components/Footer';
 import { SaleOffProvider } from '@/app/context/SaleOffContext';
-import { CartProvider } from '@/app/context/CartContext';
 import { SidebarProvider } from '@/app/context/SidebarContext';
 import { LanguageProvider } from '@/app/context/ChangeLanguageContext';
 
@@ -33,7 +32,6 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             <SidebarProvider>
               <LanguageProvider>
                 <LoginProvider>
-                  <CartProvider>
                     <div className="w-full">
                       <Header />
                       <ToastContainer
@@ -56,7 +54,6 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
                       <div className="top-40 w-full">{children}</div>
                     </SaleOffProvider>
                 
-                  </CartProvider>
                 </LoginProvider>
               </LanguageProvider>
             </SidebarProvider>
